@@ -62,8 +62,7 @@ button { font: inherit; color: inherit; }
   text-align: left;
   transition: background .15s, border-color .15s;
 }
-.start-btn { font-weight: 600; }
-.start-btn svg { width: 22px; height: 22px; fill: var(--accent); flex: none; }
+.start-btn { font-weight: 700; font-size: 15px; letter-spacing: .3px; justify-content: center; }
 .start-btn:hover, .task:hover { background: rgba(255, 255, 255, 0.35); }
 .start-btn[aria-expanded="true"] { background: rgba(255, 255, 255, 0.5); }
 
@@ -219,7 +218,8 @@ body.dragging { cursor: grabbing; }
 @media (max-width: 760px) {
   :root { --taskbar-w: 64px; }
   .taskbar { left: 6px; top: 6px; bottom: 6px; padding: 8px 6px; border-radius: 14px; }
-  .start-btn span, .task .t-name, .tasks:empty::after { display: none; }
+  .task .t-name, .tasks:empty::after { display: none; }
+  .start-btn { font-size: 12px; }
   .start-btn, .task { justify-content: center; padding: 9px 0; }
   .clock .date { display: none; }
   .clock .time { font-size: 14px; }
