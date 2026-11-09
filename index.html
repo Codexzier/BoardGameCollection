@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Spielesammlung</title>
+  <meta name="description" content="Eine kleine Spielesammlung im Browser – Domino, Mahjong, Rommé, Entenjagd und Aquarium.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='6' width='52' height='52' rx='14' fill='%233b82f6'/%3E%3Ccircle cx='24' cy='24' r='6' fill='white'/%3E%3Ccircle cx='40' cy='40' r='6' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/os.css">
+</head>
+<body>
+  <aside class="taskbar glass" aria-label="Taskleiste">
+    <button class="start-btn" id="startBtn" aria-haspopup="menu" aria-expanded="false" title="Start">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>
+      <span>Start</span>
+    </button>
+    <div class="task-sep"></div>
+    <nav class="tasks" id="tasks" aria-label="Laufende Anwendungen"></nav>
+    <div class="tray">
+      <div class="clock" id="clock"><span class="time">--:--</span><span class="date"></span></div>
+    </div>
+  </aside>
+
+  <div class="start-menu glass" id="startMenu" role="menu" hidden>
+    <div class="start-head">Spielesammlung</div>
+    <div class="start-list" id="startList"></div>
+  </div>
+
+  <main class="desktop" id="desktop">
+    <div class="icons" id="icons"></div>
+  </main>
+
+  <template id="winTpl">
+    <section class="window glass" role="dialog">
+      <header class="titlebar">
+        <span class="win-icon"></span>
+        <span class="win-title"></span>
+        <div class="win-controls">
+          <button class="wc min" title="Minimieren" aria-label="Minimieren"><svg viewBox="0 0 12 12"><path d="M2 6h8"/></svg></button>
+          <button class="wc max" title="Maximieren" aria-label="Maximieren"><svg viewBox="0 0 12 12"><rect x="2.5" y="2.5" width="7" height="7" rx="1"/></svg></button>
+          <button class="wc close" title="Schließen" aria-label="Schließen"><svg viewBox="0 0 12 12"><path d="M3 3l6 6M9 3l-6 6"/></svg></button>
+        </div>
+      </header>
+      <div class="win-body"></div>
+      <div class="resize-handle" aria-hidden="true"></div>
+    </section>
+  </template>
+
+  <script src="js/os.js"></script>
+</body>
+</html>

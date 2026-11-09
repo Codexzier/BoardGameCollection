@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Domino</title>
+<link rel="stylesheet" href="../common.css">
+<style>
+  body {
+    display: flex; flex-direction: column;
+    background: radial-gradient(ellipse at 50% 40%, #3c8f7c 0%, #276b5c 60%, #1d5248 100%);
+  }
+  .opponents { display: flex; gap: 10px; justify-content: center; padding: 10px; flex-wrap: wrap; }
+  .opp {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    min-width: 150px; padding: 8px 12px; border-radius: 12px;
+    background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.22);
+    color: #fff; font-size: 13px; transition: background .2s, box-shadow .2s;
+  }
+  .opp.turn { background: rgba(255,255,255,.3); box-shadow: 0 0 0 2px rgba(255,255,255,.7); }
+  .opp .name { font-weight: 600; }
+  .opp .backs { display: flex; gap: 3px; flex-wrap: wrap; justify-content: center; max-width: 220px; }
+  .opp .back { width: 11px; height: 22px; border-radius: 3px; background: linear-gradient(#f2f4f8, #cfd5df); box-shadow: 0 1px 2px rgba(0,0,0,.35); }
+  .opp .msg { min-height: 16px; font-size: 12px; opacity: .9; }
+
+  .board { position: relative; flex: 1; min-height: 120px; margin: 0 12px; }
+  .board .empty-hint {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    color: rgba(255,255,255,.75); font-size: 15px; text-align: center; padding: 20px;
+  }
+  .tile { position: absolute; }
+  .tile img { position: absolute; left: 50%; top: 50%; pointer-events: none; filter: drop-shadow(0 2px 2px rgba(0,0,0,.35)); }
+  .tile.glow img { filter: drop-shadow(0 0 6px #ffe36b) drop-shadow(0 0 3px #ffe36b); }
+  .tile.fresh { animation: drop .3s ease-out; }
+  @keyframes drop { from { opacity: 0; transform: scale(1.25); } }
+
+  .bottom { padding: 8px 12px 12px; display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .status { color: #fff; font-size: 14px; min-height: 20px; text-align: center; text-shadow: 0 1px 2px rgba(0,0,0,.35); }
+  .choices { display: flex; gap: 8px; min-height: 32px; flex-wrap: wrap; justify-content: center; }
+  .hand {
+    display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+    padding: 10px 14px; border-radius: 14px;
+    background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.25);
+    min-height: 96px; max-width: 100%;
+  }
+  .hand.turn { box-shadow: 0 0 0 2px rgba(255,255,255,.65); }
+  .htile {
+    width: 38px; height: 76px; border: 0; padding: 0; background: none; cursor: pointer;
+    transition: transform .12s, filter .12s, opacity .12s;
+  }
+  .htile img { width: 100%; height: 100%; display: block; filter: drop-shadow(0 2px 3px rgba(0,0,0,.35)); pointer-events: none; }
+  .htile.playable:hover { transform: translateY(-4px); }
+  .htile.dim { opacity: .55; cursor: default; }
+  .htile.sel { transform: translateY(-10px); }
+  .htile.sel img { filter: drop-shadow(0 0 6px #ffe36b) drop-shadow(0 2px 3px rgba(0,0,0,.35)); }
+  .boneyard { color: #fff; font-size: 13px; opacity: .9; }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <button class="btn primary" id="newBtn">Neues Spiel</button>
+    <label class="stat">Gegner
+      <select class="btn" id="oppSel"><option>1</option><option selected>2</option><option>3</option></select>
+    </label>
+    <label class="stat">Design
+      <select class="btn" id="themeSel">
+        <option value="light">Hell</option><option value="dark">Dunkel</option><option value="stars">Sterne</option>
+        <option value="hearts">Herzen</option><option value="gingerbread">Lebkuchen</option>
+      </select>
+    </label>
+    <span class="spacer"></span>
+    <span class="stat" id="scores"></span>
+    <button class="btn" id="helpBtn">Regeln</button>
+  </div>
+
+  <div class="opponents" id="opps"></div>
+  <div class="board" id="board"></div>
+  <div class="bottom">
+    <div class="status" id="status"></div>
+    <div class="choices" id="choices"></div>
+    <div class="hand" id="hand"></div>
+    <div class="boneyard" id="boneyard"></div>
+  </div>
+
+  <div class="overlay" id="dlg" hidden><div class="panel" id="dlgPanel"></div></div>
+
+  <script src="game.js"></script>
+</body>
+</html>
