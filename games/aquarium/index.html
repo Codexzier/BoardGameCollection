@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aquarium</title>
+<link rel="stylesheet" href="../common.css">
+<style>
+  body { display: flex; flex-direction: column; background: #2b6f8f; }
+  .toolbar { gap: 6px; }
+  .shop { display: flex; gap: 6px; flex-wrap: wrap; }
+  .item {
+    display: inline-flex; align-items: center; gap: 6px;
+    border: 1px solid rgba(24,34,46,.12); background: rgba(255,255,255,.85);
+    border-radius: 10px; padding: 3px 10px 3px 4px; cursor: pointer; font-size: 13px; line-height: 1.15;
+  }
+  .item img { width: 30px; height: 30px; }
+  .item .food { width: 30px; height: 30px; display: grid; place-items: center; font-size: 18px; }
+  .item small { display: block; color: var(--ui-dim); font-size: 11px; }
+  .item.on { background: var(--accent); color: #fff; border-color: transparent; }
+  .item.on small { color: rgba(255,255,255,.85); }
+  .item:disabled { opacity: .45; cursor: default; }
+  .money { font-size: 16px; font-weight: 700; padding: 4px 10px; border-radius: 9px; background: #fff3c4; color: #6b4b00; font-variant-numeric: tabular-nums; }
+  .wrap { position: relative; flex: 1; min-height: 0; }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .legend {
+    position: absolute; left: 10px; bottom: 10px; z-index: 5;
+    background: rgba(255,255,255,.72); border: 1px solid rgba(255,255,255,.9);
+    border-radius: 12px; padding: 6px 10px; font-size: 12px; line-height: 1.5;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    pointer-events: none;
+  }
+  .legend img { width: 18px; height: 18px; vertical-align: -4px; }
+  .cycle { display: flex; align-items: center; gap: 4px; }
+  .rps { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 12px 0; font-size: 14px; }
+  .rps img { width: 44px; height: 44px; }
+  .rps .arrow { color: var(--ui-dim); font-size: 13px; }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <span class="money" id="money">100</span>
+    <div class="shop" id="shop"></div>
+    <span class="spacer"></span>
+    <span class="stat">Zeit <b id="time">0:00</b></span>
+    <span class="stat">Fische <b id="alive">0</b></span>
+    <button class="btn primary" id="startBtn">Start</button>
+    <button class="btn" id="pauseBtn">Pause</button>
+    <button class="btn" id="helpBtn">Regeln</button>
+  </div>
+  <div class="wrap">
+    <canvas id="c"></canvas>
+    <div class="legend" id="legend"></div>
+  </div>
+  <div class="overlay" id="dlg" hidden><div class="panel" id="dlgPanel"></div></div>
+  <div class="toast" id="toast"></div>
+  <script src="game.js"></script>
+</body>
+</html>

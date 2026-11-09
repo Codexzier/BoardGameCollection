@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mahjong</title>
+<link rel="stylesheet" href="../common.css">
+<style>
+  body {
+    display: flex; flex-direction: column;
+    background: radial-gradient(ellipse at 50% 35%, #4f6f8f 0%, #34506d 60%, #253b53 100%);
+  }
+  .timer {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums;
+    background: rgba(255,255,255,.9); border-radius: 10px; padding: 2px 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.12);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .timer svg { width: 18px; height: 18px; stroke: var(--accent); fill: none; stroke-width: 2; stroke-linecap: round; }
+  .stage { position: relative; flex: 1; overflow: hidden; }
+  .board { position: absolute; left: 0; top: 0; }
+  .mj {
+    position: absolute;
+    border-radius: calc(var(--w) * 0.12);
+    background-color: #fbf7ec;
+    background-size: 100% 100%;
+    box-shadow:
+      calc(var(--d) * -0.5) calc(var(--d) * 0.5) 0 #e8dcc0,
+      calc(var(--d) * -1) calc(var(--d) * 1) 0 #c9a46a,
+      calc(var(--d) * -1) calc(var(--d) * 1.2) calc(var(--d) * 1.6) rgba(0,0,0,.35);
+    cursor: pointer;
+    transition: filter .12s, transform .12s, opacity .18s;
+  }
+  .mj.blocked { filter: brightness(.82) saturate(.85); cursor: default; }
+  body.nohl .mj.blocked { filter: none; }
+  .mj.free:hover { filter: brightness(1.06); }
+  .mj.sel { filter: none; outline: 3px solid #ffb02e; outline-offset: -2px; transform: translateY(-2px); }
+  .mj.hint { animation: hint 0.5s ease-in-out 3; }
+  .mj.gone { opacity: 0; transform: scale(.85); pointer-events: none; }
+  .mj.shake { animation: shake .3s; }
+  @keyframes hint { 50% { filter: brightness(1.15) drop-shadow(0 0 8px #8fe388); outline: 3px solid #5bd463; outline-offset: -2px; } }
+  @keyframes shake { 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
+  @media (max-width: 820px) { .timer { position: static; transform: none; order: -1; } }
+  .paused .board { filter: blur(14px); pointer-events: none; }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <button class="btn primary" id="newBtn">Neues Spiel</button>
+    <button class="btn" id="undoBtn" title="Strg+Z">↶ Rückgängig</button>
+    <button class="btn" id="hintBtn">Tipp</button>
+    <button class="btn" id="shuffleBtn">Mischen</button>
+    <div class="timer" id="timerBox"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg><span id="timer">00:00</span></div>
+    <span class="spacer"></span>
+    <span class="stat">Steine <b id="left">144</b></span>
+    <span class="stat">Züge <b id="pairs">0</b></span>
+    <button class="btn" id="pauseBtn">Pause</button>
+  </div>
+  <div class="stage" id="stage"><div class="board" id="board"></div></div>
+  <div class="overlay" id="dlg" hidden><div class="panel" id="dlgPanel"></div></div>
+  <div class="toast" id="toast"></div>
+  <script src="game.js"></script>
+</body>
+</html>
