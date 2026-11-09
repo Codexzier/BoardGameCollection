@@ -8,6 +8,7 @@
     romme: `<svg viewBox="0 0 48 48"><rect x="6" y="9" width="22" height="31" rx="3.5" fill="#fff" stroke="#25303c" stroke-width="2" transform="rotate(-12 17 24)"/><rect x="19" y="7" width="22" height="31" rx="3.5" fill="#fff" stroke="#25303c" stroke-width="2" transform="rotate(10 30 22)"/><path d="M31 17c-3-4-8-1-5 3l5 5 5-5c3-4-2-7-5-3z" fill="#e0393e" transform="rotate(10 30 22)"/></svg>`,
     duck: `<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="#ffffff" stroke="#e0393e" stroke-width="3"/><circle cx="24" cy="24" r="12" fill="none" stroke="#e0393e" stroke-width="3"/><path d="M15 31c0-6 4-9 8-9 0-5 3-8 7-8 3 0 5 2 5 4l4 1-4 2c0 3-2 4-3 5 4 1 4 9-5 9H19c-3 0-4-2-4-4z" fill="#ffcc33" stroke="#9a6b10" stroke-width="1.6"/><circle cx="31" cy="18" r="1.4" fill="#25303c"/></svg>`,
     aquarium: `<svg viewBox="0 0 48 48"><rect x="4" y="8" width="40" height="32" rx="7" fill="#7fd0ee"/><path d="M4 33c6-3 10 2 16-1s10 2 16-1 8 1 8 1v1a7 7 0 0 1-7 7H11a7 7 0 0 1-7-7z" fill="#f2dfa7"/><path d="M14 22c4-5 12-5 16 0-4 5-12 5-16 0z" fill="#3a8ee6"/><path d="M30 22l6-5v10z" fill="#3a8ee6"/><circle cx="18.5" cy="21" r="1.4" fill="#fff"/><circle cx="36" cy="13" r="2" fill="none" stroke="#fff" stroke-width="1.4"/></svg>`,
+    racing: `<svg viewBox="0 0 48 48"><rect x="4" y="6" width="40" height="36" rx="8" fill="#5bbf5f"/><path d="M14 42V20a10 10 0 0 1 20 0v22" fill="none" stroke="#8a96a3" stroke-width="8"/><rect x="20" y="20" width="9" height="16" rx="3" fill="#e0393e"/><rect x="21.5" y="23" width="6" height="3" rx="1" fill="#fff"/><g fill="#25303c"><rect x="6" y="8" width="5" height="5"/><rect x="16" y="8" width="5" height="5"/><rect x="11" y="13" width="5" height="5"/></g></svg>`,
     about: `<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="19" fill="#2f7cf6"/><rect x="21.5" y="20" width="5" height="15" rx="2.5" fill="#fff"/><circle cx="24" cy="14" r="3" fill="#fff"/></svg>`,
   };
 
@@ -17,6 +18,7 @@
     { id: 'romme',    name: 'Rommé',       desc: 'Kartenspiel gegen 1–3 NPCs', url: 'games/romme/index.html',    w: 1160, h: 800 },
     { id: 'duck',     name: 'Entenjagd',   desc: 'Schießbude – 2 Minuten', url: 'games/entenjagd/index.html', w: 1060, h: 660 },
     { id: 'aquarium', name: 'Aquarium',    desc: 'Fressen & gefressen werden', url: 'games/aquarium/index.html', w: 1100, h: 720 },
+    { id: 'racing',   name: 'Rennen',      desc: '3 Runden gegen einen NPC', url: 'games/rennen/index.html',   w: 1180, h: 760 },
     { id: 'about',    name: 'Über',        desc: 'Infos & Credits', url: 'apps/about.html', w: 560, h: 460 },
   ];
 
