@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LoopStudio</title>
+<link rel="stylesheet" href="../../games/common.css">
+<style>
+  :root { --hdr: 300px; --bw: 48px; --cw: 24px; --bg: #1d222a; --panel: #262c35; --line: rgba(255,255,255,.07); --txt: #dfe5ec; --dim: #8b96a3; }
+  body { display: flex; flex-direction: column; background: var(--bg); color: var(--txt); }
+  .toolbar { background: #2c333d; border-bottom: 1px solid #12161b; color: var(--txt); }
+  .toolbar .stat { color: var(--dim); }
+  .toolbar .stat b { color: var(--txt); }
+  .btn { background: #3a424e; color: var(--txt); border-color: rgba(0,0,0,.35); box-shadow: none; }
+  .btn:hover { background: #46505d; box-shadow: none; }
+  .btn.on { background: var(--accent); color: #fff; }
+  .ico { display: inline-block; width: 16px; height: 16px; background: currentColor; -webkit-mask: var(--i) center / contain no-repeat; mask: var(--i) center / contain no-repeat; }
+  .transport { display: flex; gap: 4px; }
+  .transport .btn { padding: 6px 10px; }
+  .transport .btn.play.on { background: #2f9e5b; }
+  .lcd { font: 700 15px ui-monospace, Menlo, Consolas, monospace; background: #0f1317; color: #7fe0a8; padding: 5px 10px; border-radius: 8px; min-width: 92px; text-align: center; letter-spacing: 1px; }
+  .seg { background: #3a424e; border-color: rgba(0,0,0,.35); }
+  .seg button { color: var(--txt); }
+  input.num { width: 58px; font: inherit; background: #1b2026; color: var(--txt); border: 1px solid #12161b; border-radius: 7px; padding: 4px 6px; }
+  select.btn { background: #3a424e; color: var(--txt); }
+
+  .section-head { display: flex; align-items: center; gap: 10px; padding: 6px 10px; background: #222830; border-bottom: 1px solid #12161b; font-size: 12px; text-transform: uppercase; letter-spacing: .8px; color: var(--dim); }
+  .section-head .spacer { flex: 1; }
+  .section-head .btn, .section-head select { text-transform: none; letter-spacing: 0; font-size: 13px; padding: 4px 10px; }
+
+  /* ---------- Arrangement ---------- */
+  .arr { flex: 1 1 40%; min-height: 150px; display: flex; flex-direction: column; border-bottom: 3px solid #12161b; }
+  .arr-scroll { flex: 1; overflow: auto; position: relative; }
+  .arr-inner { position: relative; min-width: max-content; }
+  .ruler { display: flex; position: sticky; top: 0; z-index: 6; background: #222830; height: 22px; border-bottom: 1px solid #12161b; }
+  .ruler .corner { position: sticky; left: 0; width: var(--hdr); flex: none; background: #222830; z-index: 2; border-right: 1px solid #12161b; }
+  .ruler .bar { width: var(--bw); flex: none; font-size: 11px; color: var(--dim); padding: 4px 0 0 4px; border-left: 1px solid var(--line); cursor: pointer; }
+  .trow { display: flex; height: 64px; border-bottom: 1px solid #12161b; }
+  .thead {
+    position: sticky; left: 0; z-index: 4; width: var(--hdr); flex: none; display: flex; align-items: center; gap: 8px;
+    background: var(--panel); border-right: 1px solid #12161b; padding: 0 8px 0 0; cursor: pointer;
+  }
+  .thead.sel { background: #313946; }
+  .thead .color { width: 6px; align-self: stretch; }
+  .thead .info { flex: 1; min-width: 0; line-height: 1.25; }
+  .thead .info b { display: block; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .thead .info small { font-size: 11px; color: var(--dim); }
+  .thead .ms { display: flex; flex-direction: column; gap: 3px; }
+  .thead .ms button { width: 22px; height: 18px; font-size: 10px; font-weight: 700; border: 0; border-radius: 4px; background: #3a424e; color: var(--dim); cursor: pointer; padding: 0; }
+  .thead .ms button.m.on { background: #e5484d; color: #fff; }
+  .thead .ms button.s.on { background: #f2c230; color: #222; }
+  .thead .del { border: 0; background: none; color: var(--dim); cursor: pointer; font-size: 16px; padding: 2px 4px; }
+  .thead .del:hover { color: #ff6b6b; }
+  .lane { position: relative; flex: none; background:
+      linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px) 0 0 / var(--bw) 100%,
+      linear-gradient(90deg, rgba(255,255,255,.035) 0 calc(var(--bw) * 4), transparent 0 calc(var(--bw) * 8)) 0 0 / calc(var(--bw) * 8) 100%;
+    cursor: copy; }
+  .clip { position: absolute; top: 6px; bottom: 6px; border-radius: 6px; overflow: hidden; cursor: pointer; box-shadow: inset 0 0 0 1px rgba(0,0,0,.35); }
+  .clip span { position: absolute; left: 5px; top: 2px; font-size: 11px; font-weight: 700; color: #fff; text-shadow: 0 1px 1px rgba(0,0,0,.4); white-space: nowrap; }
+  .clip canvas { position: absolute; left: 0; top: 16px; width: 100%; height: calc(100% - 18px); opacity: .85; }
+  .clip.cur { box-shadow: inset 0 0 0 2px #fff; }
+  .empty-arr { padding: 22px; color: var(--dim); font-size: 14px; }
+  .playhead { position: absolute; top: 0; bottom: 0; width: 2px; background: #7fe0a8; z-index: 5; pointer-events: none; box-shadow: 0 0 6px #7fe0a8; }
+
+  /* ---------- Unterer Bereich ---------- */
+  .bottom { flex: 1 1 55%; min-height: 220px; display: flex; flex-direction: column; }
+  .tabs { display: flex; gap: 2px; }
+  .tabs button { border: 0; background: transparent; color: var(--dim); padding: 4px 10px; border-radius: 6px; cursor: pointer; font: inherit; font-size: 12px; text-transform: uppercase; letter-spacing: .8px; }
+  .tabs button.on { background: #3a424e; color: var(--txt); }
+  .view { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .view[hidden] { display: none; }
+
+  .ed-scroll { flex: 1; overflow: auto; position: relative; }
+  .ed-inner { display: flex; min-width: max-content; position: relative; }
+  .keys { position: sticky; left: 0; z-index: 3; width: 92px; flex: none; background: var(--panel); border-right: 1px solid #12161b; }
+  .key { height: var(--rh); display: flex; align-items: center; padding-left: 8px; font-size: 11px; color: var(--dim); border-bottom: 1px solid rgba(0,0,0,.25); cursor: pointer; }
+  .key.white { background: #e9edf2; color: #333; }
+  .key.black { background: #2a3038; color: #cfd6de; }
+  .key.c { font-weight: 700; }
+  .key:hover { filter: brightness(1.1); }
+  .grid { position: relative; flex: none; cursor: crosshair; touch-action: none;
+    background:
+      linear-gradient(90deg, rgba(255,255,255,.22) 1px, transparent 1px) 0 0 / calc(var(--cw) * 16) 100%,
+      linear-gradient(90deg, rgba(255,255,255,.11) 1px, transparent 1px) 0 0 / calc(var(--cw) * 4) 100%,
+      linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / var(--cw) 100%,
+      linear-gradient(0deg, rgba(0,0,0,.3) 1px, transparent 1px) 0 0 / 100% var(--rh),
+      linear-gradient(90deg, transparent 0 calc(var(--cw) * 4), rgba(255,255,255,.025) 0 calc(var(--cw) * 8)) 0 0 / calc(var(--cw) * 8) 100%;
+  }
+  .grid .stripe { position: absolute; left: 0; right: 0; height: var(--rh); background: rgba(0,0,0,.18); pointer-events: none; }
+  .note { position: absolute; height: calc(var(--rh) - 3px); margin-top: 1px; border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.3), 0 1px 2px rgba(0,0,0,.4); pointer-events: none; }
+  .stepcol { position: absolute; top: 0; bottom: 0; width: var(--cw); background: rgba(127,224,168,.16); pointer-events: none; }
+  .ed-empty { padding: 22px; color: var(--dim); font-size: 14px; }
+
+  /* ---------- Mixer ---------- */
+  .mixer { flex: 1; display: flex; gap: 8px; padding: 12px; overflow-x: auto; align-items: stretch; }
+  .strip { width: 86px; flex: none; background: var(--panel); border-radius: 10px; padding: 8px 6px; display: flex; flex-direction: column; align-items: center; gap: 6px; border-top: 4px solid var(--c, #888); }
+  .strip.master { --c: #fff; background: #303845; width: 96px; margin-left: 8px; }
+  .strip .nm { font-size: 12px; font-weight: 600; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .strip .fader { flex: 1; display: flex; gap: 6px; min-height: 120px; }
+  .strip input[type=range] { writing-mode: vertical-lr; direction: rtl; width: 26px; height: 100%; accent-color: var(--c, #fff); }
+  .vu { width: 8px; height: 100%; background: #12161b; border-radius: 4px; position: relative; overflow: hidden; }
+  .vu i { position: absolute; left: 0; right: 0; bottom: 0; height: 0; background: linear-gradient(0deg, #2fbf6a 0 60%, #f2c230 60% 85%, #e5484d 85%); background-size: 100% var(--vh, 150px); background-position: bottom; }
+  .strip .val { font-size: 11px; color: var(--dim); font-variant-numeric: tabular-nums; }
+  .strip .ms { display: flex; gap: 3px; }
+  .strip .ms button { width: 26px; height: 20px; font-size: 10px; font-weight: 700; border: 0; border-radius: 4px; background: #3a424e; color: var(--dim); cursor: pointer; }
+  .strip .ms button.m.on { background: #e5484d; color: #fff; }
+  .strip .ms button.s.on { background: #f2c230; color: #222; }
+
+  /* ---------- Drehregler ---------- */
+  .knob { display: flex; flex-direction: column; align-items: center; gap: 1px; cursor: ns-resize; touch-action: none; user-select: none; outline: none; }
+  .knob svg { width: 30px; height: 30px; }
+  .knob small { font-size: 9px; color: var(--dim); text-transform: uppercase; letter-spacing: .5px; }
+  .knob:focus-visible svg { filter: drop-shadow(0 0 3px var(--accent)); }
+
+  .panel { color: var(--ui-text); }
+  .panel input[type=text] { width: 100%; font: inherit; padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(24,34,46,.2); }
+  #edTools { display: flex; gap: 6px; align-items: center; overflow-x: auto; min-width: 0; scrollbar-width: none; }
+  .bottom .section-head .spacer { min-width: 6px; }
+  @media (max-width: 760px) {
+    :root { --hdr: 236px; --bw: 40px; }
+    .thead { gap: 5px; padding-right: 4px; }
+    .thead .info small { display: none; }
+    .knob svg { width: 24px; height: 24px; }
+    .knob small { font-size: 8px; }
+    .thead .del { padding: 2px; font-size: 14px; }
+    .toolbar .lbl { display: none; }
+    .tabs button { padding: 4px 6px; }
+    .tabs .long { display: none; }
+    .bottom .section-head { flex-wrap: nowrap; }
+  }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <div class="transport">
+      <button class="btn play" id="playBtn" title="Play (Leertaste)"><span class="ico" style="--i:url(../../assets/icons/right.png)"></span><span class="lbl">Play</span></button>
+      <button class="btn play" id="loopBtn" title="Play in Loop"><span class="ico" style="--i:url(../../assets/icons/return.png)"></span><span class="lbl">Loop</span></button>
+      <button class="btn" id="pauseBtn" title="Pause"><span class="ico" style="--i:url(../../assets/icons/pause.png)"></span></button>
+      <button class="btn" id="stopBtn" title="Stop"><span class="ico" style="--i:url(../../assets/icons/stop.png)"></span></button>
+    </div>
+    <span class="lcd" id="pos">1.1.1</span>
+    <div class="seg" id="modeSeg" title="Song: Arrangement abspielen · Pattern: nur den Loop im Editor">
+      <button data-m="song" class="on">Song</button><button data-m="pattern">Pattern</button>
+    </div>
+    <label class="stat">BPM <input class="num" type="number" id="bpm" min="40" max="240" value="110"></label>
+    <label class="stat">Takte <select class="btn" id="bars"><option>8</option><option selected>16</option><option>32</option><option>64</option></select></label>
+    <span class="spacer"></span>
+    <button class="btn" id="newBtn" title="Neues Projekt"><span class="ico" style="--i:url(../../assets/icons/plus.png)"></span><span class="lbl">Neu</span></button>
+    <button class="btn" id="loadBtn" title="Setup laden (.json)"><span class="ico" style="--i:url(../../assets/icons/open.png)"></span><span class="lbl">Laden</span></button>
+    <button class="btn" id="saveBtn" title="Setup herunterladen (.json)"><span class="ico" style="--i:url(../../assets/icons/import.png)"></span><span class="lbl">Herunterladen</span></button>
+    <input type="file" id="file" accept=".json,application/json" hidden>
+  </div>
+
+  <section class="arr">
+    <div class="section-head">Arrangement
+      <span class="spacer"></span>
+      <select class="btn" id="addTrack" title="Neue Spur anlegen">
+        <option value="">+ Spur hinzufügen …</option>
+        <option value="drums">Drumset</option><option value="bass">Bassline</option><option value="melo">Melo</option>
+        <option value="strings">Strings</option><option value="fx">Soundeffekte</option>
+      </select>
+    </div>
+    <div class="arr-scroll" id="arrScroll"><div class="arr-inner" id="arr"></div></div>
+  </section>
+
+  <section class="bottom">
+    <div class="section-head">
+      <div class="tabs" id="tabs"><button data-v="editor" class="on">Pattern<span class="long">-Editor</span></button><button data-v="mixer">Mixer</button></div>
+      <span class="spacer"></span>
+      <span id="edTools"></span>
+    </div>
+    <div class="view" id="editorView"><div class="ed-scroll" id="edScroll"><div class="ed-inner" id="ed"></div></div></div>
+    <div class="view" id="mixerView" hidden><div class="mixer" id="mixer"></div></div>
+  </section>
+
+  <div class="overlay" id="dlg" hidden><div class="panel" id="dlgPanel"></div></div>
+  <div class="toast" id="toast"></div>
+  <script src="audio.js"></script>
+  <script src="studio.js"></script>
+</body>
+</html>
