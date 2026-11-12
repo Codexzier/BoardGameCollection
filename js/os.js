@@ -9,16 +9,22 @@
     duck: `<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="#ffffff" stroke="#e0393e" stroke-width="3"/><circle cx="24" cy="24" r="12" fill="none" stroke="#e0393e" stroke-width="3"/><path d="M15 31c0-6 4-9 8-9 0-5 3-8 7-8 3 0 5 2 5 4l4 1-4 2c0 3-2 4-3 5 4 1 4 9-5 9H19c-3 0-4-2-4-4z" fill="#ffcc33" stroke="#9a6b10" stroke-width="1.6"/><circle cx="31" cy="18" r="1.4" fill="#25303c"/></svg>`,
     aquarium: `<svg viewBox="0 0 48 48"><rect x="4" y="8" width="40" height="32" rx="7" fill="#7fd0ee"/><path d="M4 33c6-3 10 2 16-1s10 2 16-1 8 1 8 1v1a7 7 0 0 1-7 7H11a7 7 0 0 1-7-7z" fill="#f2dfa7"/><path d="M14 22c4-5 12-5 16 0-4 5-12 5-16 0z" fill="#3a8ee6"/><path d="M30 22l6-5v10z" fill="#3a8ee6"/><circle cx="18.5" cy="21" r="1.4" fill="#fff"/><circle cx="36" cy="13" r="2" fill="none" stroke="#fff" stroke-width="1.4"/></svg>`,
     racing: `<svg viewBox="0 0 48 48"><rect x="4" y="6" width="40" height="36" rx="8" fill="#5bbf5f"/><path d="M14 42V20a10 10 0 0 1 20 0v22" fill="none" stroke="#8a96a3" stroke-width="8"/><rect x="20" y="20" width="9" height="16" rx="3" fill="#e0393e"/><rect x="21.5" y="23" width="6" height="3" rx="1" fill="#fff"/><g fill="#25303c"><rect x="6" y="8" width="5" height="5"/><rect x="16" y="8" width="5" height="5"/><rect x="11" y="13" width="5" height="5"/></g></svg>`,
+    sketch: `<svg viewBox="0 0 48 48"><path d="M24 5C12 5 4 13 4 23c0 9 7 15 14 15 3 0 4-2 4-4s-2-3-2-5 2-4 5-4h6c7 0 13-4 13-11C44 9 35 5 24 5z" fill="#f4e6c9" stroke="#9b7b47" stroke-width="2"/><circle cx="14" cy="20" r="3.4" fill="#e0393e"/><circle cx="21" cy="13" r="3.4" fill="#f2c230"/><circle cx="31" cy="12" r="3.4" fill="#2fb36a"/><circle cx="37" cy="20" r="3.4" fill="#2f7cf6"/><path d="M27 44l14-21 4 2-12 22z" fill="#5a3b1e"/><path d="M41 23l2-4 4 2-2 4z" fill="#c0c6cf"/></svg>`,
+    dicta: `<svg viewBox="0 0 48 48"><rect x="12" y="3" width="24" height="42" rx="7" fill="#3a4049"/><rect x="15.5" y="7" width="17" height="9" rx="2" fill="#a9d68c"/><g fill="#1f242b"><circle cx="19" cy="22" r="1.3"/><circle cx="24" cy="22" r="1.3"/><circle cx="29" cy="22" r="1.3"/><circle cx="19" cy="26" r="1.3"/><circle cx="24" cy="26" r="1.3"/><circle cx="29" cy="26" r="1.3"/></g><circle cx="19" cy="36" r="3.6" fill="#e5484d"/><path d="M27 32.5v7l5.5-3.5z" fill="#e8ecf1"/></svg>`,
+    games: `<svg viewBox="0 0 48 48"><rect x="4" y="14" width="40" height="22" rx="11" fill="#5b6cf0"/><path d="M14 20v10M9 25h10" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/><circle cx="32" cy="22" r="2.6" fill="#fff"/><circle cx="37" cy="27" r="2.6" fill="#fff"/></svg>`,
+    apps: `<svg viewBox="0 0 48 48"><rect x="5" y="5" width="17" height="17" rx="5" fill="#2f9e5b"/><rect x="26" y="5" width="17" height="17" rx="5" fill="#f2a530"/><rect x="5" y="26" width="17" height="17" rx="5" fill="#e5484d"/><rect x="26" y="26" width="17" height="17" rx="5" fill="#2f7cf6"/></svg>`,
     about: `<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="19" fill="#2f7cf6"/><rect x="21.5" y="20" width="5" height="15" rx="2.5" fill="#fff"/><circle cx="24" cy="14" r="3" fill="#fff"/></svg>`,
   };
 
   const APPS = [
-    { id: 'domino',   name: 'Domino',      desc: 'Klassisches Anlege-Domino', url: 'games/domino/index.html',   w: 1040, h: 720 },
-    { id: 'mahjong',  name: 'Mahjong',     desc: 'Solitaire mit Zeit & Rückgängig', url: 'games/mahjong/index.html', w: 1080, h: 760 },
-    { id: 'romme',    name: 'Rommé',       desc: 'Kartenspiel gegen 1–3 NPCs', url: 'games/romme/index.html',    w: 1160, h: 800 },
-    { id: 'duck',     name: 'Entenjagd',   desc: 'Schießbude – 2 Minuten', url: 'games/entenjagd/index.html', w: 1060, h: 660 },
-    { id: 'aquarium', name: 'Aquarium',    desc: 'Fressen & gefressen werden', url: 'games/aquarium/index.html', w: 1100, h: 720 },
-    { id: 'racing',   name: 'Rennen',      desc: '3 Runden gegen einen NPC', url: 'games/rennen/index.html',   w: 1180, h: 760 },
+    { id: 'domino',   name: 'Domino',      desc: 'Klassisches Anlege-Domino', url: 'games/domino/index.html',   w: 1040, h: 720, group: 'games' },
+    { id: 'mahjong',  name: 'Mahjong',     desc: 'Solitaire mit Zeit & Rückgängig', url: 'games/mahjong/index.html', w: 1080, h: 760, group: 'games' },
+    { id: 'romme',    name: 'Rommé',       desc: 'Kartenspiel gegen 1–3 NPCs', url: 'games/romme/index.html',    w: 1160, h: 800, group: 'games' },
+    { id: 'duck',     name: 'Entenjagd',   desc: 'Schießbude – 2 Minuten', url: 'games/entenjagd/index.html', w: 1060, h: 660, group: 'games' },
+    { id: 'aquarium', name: 'Aquarium',    desc: 'Fressen & gefressen werden', url: 'games/aquarium/index.html', w: 1100, h: 720, group: 'games' },
+    { id: 'racing',   name: 'Rennen',      desc: '3 Runden gegen einen NPC', url: 'games/rennen/index.html',   w: 1180, h: 760, group: 'games' },
+    { id: 'sketch',   name: 'SketchPainter', desc: 'Malen & Bilder bearbeiten', url: 'apps/sketchpainter/index.html', w: 1100, h: 760, group: 'apps' },
+    { id: 'dicta',    name: 'Diktiergerät', desc: 'Sprachaufnahmen mit Effekten', url: 'apps/diktiergeraet/index.html', w: 460, h: 760, group: 'apps' },
     { id: 'about',    name: 'Über',        desc: 'Infos & Credits', url: 'apps/about.html', w: 560, h: 460 },
   ];
 
@@ -52,13 +58,46 @@
     b.addEventListener('dblclick', () => openApp(app.id));
     iconsEl.appendChild(b);
 
+  }
+
+  // Startmenü: Spielesammlung, Anwendungen, Über
+  const GROUPS = [
+    { id: 'games', name: 'Spielesammlung', icon: ICONS.games },
+    { id: 'apps', name: 'Anwendungen', icon: ICONS.apps },
+  ];
+  function menuItem(app, cls = '') {
     const s = document.createElement('button');
-    s.className = 'start-item';
+    s.className = 'start-item ' + cls;
     s.setAttribute('role', 'menuitem');
     s.innerHTML = `<span class="s-icon">${ICONS[app.id]}</span><span><b>${app.name}</b><small>${app.desc}</small></span>`;
     s.addEventListener('click', () => { toggleStart(false); openApp(app.id); });
-    startList.appendChild(s);
+    return s;
   }
+  let openGroup = null;
+  try { openGroup = localStorage.getItem('os.menuGroup'); } catch (_) {}
+  for (const g of GROUPS) {
+    const wrap = document.createElement('div');
+    wrap.className = 'grp';
+    const head = document.createElement('button');
+    head.className = 'start-item grp-head';
+    head.setAttribute('aria-expanded', String(openGroup === g.id));
+    head.innerHTML = `<span class="s-icon">${g.icon}</span><span><b>${g.name}</b></span><span class="chev" aria-hidden="true"></span>`;
+    const items = document.createElement('div');
+    items.className = 'grp-items';
+    items.hidden = openGroup !== g.id;
+    APPS.filter(a => a.group === g.id).forEach(a => items.appendChild(menuItem(a, 'sub')));
+    head.addEventListener('click', () => {
+      const open = items.hidden;
+      startList.querySelectorAll('.grp-items').forEach(el => { el.hidden = true; });
+      startList.querySelectorAll('.grp-head').forEach(el => el.setAttribute('aria-expanded', 'false'));
+      items.hidden = !open;
+      head.setAttribute('aria-expanded', String(open));
+      try { localStorage.setItem('os.menuGroup', open ? g.id : ''); } catch (_) {}
+    });
+    wrap.append(head, items);
+    startList.appendChild(wrap);
+  }
+  APPS.filter(a => !a.group).forEach(a => startList.appendChild(menuItem(a)));
 
   function toggleStart(force) {
     const open = force ?? startMenu.hidden;
@@ -85,7 +124,7 @@
     const iframe = document.createElement('iframe');
     iframe.src = app.url;
     iframe.title = app.name;
-    iframe.setAttribute('allow', 'fullscreen; autoplay');
+    iframe.setAttribute('allow', 'fullscreen; autoplay; microphone; clipboard-read; clipboard-write');
     $('.win-body', el).appendChild(iframe);
 
     const dw = desktop.clientWidth, dh = desktop.clientHeight;
@@ -163,8 +202,16 @@
     } else {
       win.prev = { left: el.style.left, top: el.style.top, width: el.style.width, height: el.style.height };
       el.classList.add('maximized');
-      Object.assign(el.style, { left: '0px', top: '10px', width: (desktop.clientWidth - 10) + 'px', height: (desktop.clientHeight - 20) + 'px' });
+      fitMax(el);
     }
+  }
+
+  // Maximierte Fenster füllen den Desktop; im Hochformat ganz ohne Rand.
+  const portrait = matchMedia('(orientation: portrait)');
+  function fitMax(el) {
+    const p = portrait.matches;
+    const g = p ? 0 : 10;
+    Object.assign(el.style, { left: '0px', top: g + 'px', width: (desktop.clientWidth - g) + 'px', height: (desktop.clientHeight - 2 * g) + 'px' });
   }
 
   function closeWin(win) {
@@ -248,9 +295,12 @@
   // Maximierte Fenster bei Größenänderung anpassen
   window.addEventListener('resize', () => {
     for (const w of windows.values()) {
-      if (w.el.classList.contains('maximized')) {
-        w.el.style.width = (desktop.clientWidth - 10) + 'px';
-        w.el.style.height = (desktop.clientHeight - 20) + 'px';
+      if (w.el.classList.contains('maximized')) fitMax(w.el);
+      else if (isSmall()) toggleMax(w); // z. B. Smartphone ins Hochformat gedreht
+      else {
+        // Fenster im sichtbaren Bereich halten
+        w.el.style.left = Math.max(0, Math.min(w.el.offsetLeft, desktop.clientWidth - 120)) + 'px';
+        w.el.style.top = Math.max(0, Math.min(w.el.offsetTop, desktop.clientHeight - 60)) + 'px';
       }
     }
   });

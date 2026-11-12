@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SketchPainter</title>
+<link rel="stylesheet" href="../../games/common.css">
+<style>
+  body { display: grid; grid-template-rows: auto 1fr auto auto; grid-template-columns: auto 1fr; background: #e9edf2; }
+  .toolbar { grid-column: 1 / -1; }
+  .ico { width: 18px; height: 18px; display: inline-block; background: currentColor; -webkit-mask: var(--i) center / contain no-repeat; mask: var(--i) center / contain no-repeat; flex: none; }
+  .btn.icon-only { padding: 6px 8px; }
+  .sep { width: 1px; height: 24px; background: rgba(24,34,46,.12); margin: 0 2px; }
+  #zoomLbl { min-width: 52px; text-align: center; font-variant-numeric: tabular-nums; }
+
+  .tools {
+    grid-row: 2 / 3; display: flex; flex-direction: column; gap: 4px; padding: 8px;
+    background: rgba(255,255,255,.6); border-right: 1px solid rgba(24,34,46,.08); overflow-y: auto;
+  }
+  .tool {
+    width: 40px; height: 40px; border-radius: 9px; border: 1px solid transparent; background: transparent;
+    display: grid; place-items: center; cursor: pointer; color: #26313d;
+  }
+  .tool svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .tool:hover { background: rgba(255,255,255,.9); }
+  .tool.on { background: var(--accent); color: #fff; }
+  .tools hr { width: 100%; border: 0; border-top: 1px solid rgba(24,34,46,.1); margin: 4px 0; }
+  .size { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: var(--ui-dim); }
+  .size input { writing-mode: vertical-lr; direction: rtl; height: 110px; width: 24px; }
+  .fillmode { display: flex; flex-direction: column; gap: 3px; }
+  .fillmode button { width: 40px; height: 26px; border-radius: 7px; border: 1px solid rgba(24,34,46,.12); background: #fff; cursor: pointer; display: grid; place-items: center; }
+  .fillmode button.on { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(47,124,246,.3); }
+  .fillmode svg { width: 22px; height: 14px; }
+
+  .stage { position: relative; overflow: auto; background:
+      repeating-conic-gradient(#dfe4ea 0 25%, #eef1f5 0 50%) 0 0 / 22px 22px; }
+  .stage .inner { position: relative; margin: 24px; display: inline-block; box-shadow: 0 6px 24px rgba(0,0,0,.18); }
+  .stage canvas { position: absolute; left: 0; top: 0; touch-action: none; }
+  .stage canvas#cv { position: relative; display: block; background: transparent; }
+  .stage.pixel canvas { image-rendering: pixelated; }
+  #ov { cursor: crosshair; }
+
+  .colors {
+    grid-column: 1 / -1; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding: 8px 12px; background: rgba(255,255,255,.7); border-top: 1px solid rgba(24,34,46,.08);
+  }
+  .slots { position: relative; width: 52px; height: 46px; flex: none; }
+  .slot { position: absolute; width: 32px; height: 32px; border-radius: 7px; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.25); cursor: pointer; padding: 0; }
+  .slot.primary { left: 0; top: 0; z-index: 2; }
+  .slot.secondary { left: 18px; top: 13px; }
+  .slot.active { box-shadow: 0 0 0 2px var(--accent); }
+  .swap { position: absolute; right: -6px; top: -6px; width: 18px; height: 18px; font-size: 12px; line-height: 1; border: 0; background: none; cursor: pointer; color: var(--ui-dim); z-index: 3; }
+  .palette { display: grid; grid-template-columns: repeat(8, 24px); gap: 4px; }
+  .palette button { width: 24px; height: 24px; border-radius: 5px; border: 1px solid rgba(0,0,0,.25); cursor: pointer; padding: 0; }
+  .palette button:hover { transform: scale(1.12); }
+  .rgb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ui-dim); flex-wrap: wrap; }
+  .rgb input[type=color] { width: 42px; height: 32px; border: 1px solid rgba(24,34,46,.15); border-radius: 8px; padding: 2px; background: #fff; cursor: pointer; }
+  .rgb input[type=text], .rgb input[type=number] { font: inherit; color: var(--ui-text); border: 1px solid rgba(24,34,46,.15); border-radius: 7px; padding: 4px 6px; background: #fff; }
+  .rgb input[type=text] { width: 84px; font-family: ui-monospace, monospace; }
+  .rgb input[type=number] { width: 58px; }
+  .rgb label { display: inline-flex; align-items: center; gap: 4px; }
+
+  .status { grid-column: 1 / -1; display: flex; gap: 18px; padding: 4px 12px; font-size: 12px; color: var(--ui-dim); background: rgba(255,255,255,.55); }
+  .panel label.row input { width: 90px; font: inherit; padding: 4px 6px; border-radius: 7px; border: 1px solid rgba(24,34,46,.2); }
+
+  @media (max-width: 720px), (orientation: portrait) {
+    body { grid-template-columns: 1fr; grid-template-rows: auto auto 1fr auto auto; }
+    .tools { grid-row: auto; flex-direction: row; flex-wrap: wrap; border-right: 0; border-bottom: 1px solid rgba(24,34,46,.08); align-items: center; }
+    .tools hr { width: 1px; height: 28px; border: 0; border-left: 1px solid rgba(24,34,46,.1); margin: 0 2px; }
+    .size { flex-direction: row; }
+    .size input { writing-mode: horizontal-tb; direction: ltr; height: 24px; width: 110px; }
+    .fillmode { flex-direction: row; }
+    .stage .inner { margin: 12px; }
+    .toolbar .lbl { display: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <button class="btn" id="newBtn" title="Neues Bild"><span class="ico" style="--i:url(../../assets/icons/plus.png)"></span><span class="lbl">Neu</span></button>
+    <button class="btn" id="openBtn" title="Bild öffnen (Strg+O)"><span class="ico" style="--i:url(../../assets/icons/open.png)"></span><span class="lbl">Öffnen</span></button>
+    <button class="btn" id="pasteBtn" title="Bild aus der Zwischenablage einfügen (Strg+V)"><span class="ico" style="--i:url(../../assets/icons/import.png)"></span><span class="lbl">Einfügen</span></button>
+    <button class="btn" id="copyBtn" title="Bild in die Zwischenablage kopieren (Strg+C)"><span class="ico" style="--i:url(../../assets/icons/export.png)"></span><span class="lbl">Kopieren</span></button>
+    <button class="btn" id="saveBtn" title="Als PNG speichern (Strg+S)"><span class="ico" style="--i:url(../../assets/icons/save.png)"></span><span class="lbl">Speichern</span></button>
+    <span class="sep"></span>
+    <button class="btn icon-only" id="undoBtn" title="Rückgängig (Strg+Z)"><span class="ico" style="--i:url(../../assets/icons/return.png)"></span></button>
+    <button class="btn icon-only" id="redoBtn" title="Wiederholen (Strg+Y)"><span class="ico" style="--i:url(../../assets/icons/return.png);transform:scaleX(-1)"></span></button>
+    <span class="sep"></span>
+    <button class="btn icon-only" id="zoomOut" title="Verkleinern"><span class="ico" style="--i:url(../../assets/icons/zoomOut.png)"></span></button>
+    <button class="btn" id="zoomLbl" title="Einpassen">100%</button>
+    <button class="btn icon-only" id="zoomIn" title="Vergrößern"><span class="ico" style="--i:url(../../assets/icons/zoomIn.png)"></span></button>
+    <input type="file" id="file" accept="image/*" hidden>
+  </div>
+
+  <div class="tools" id="tools">
+    <button class="tool on" data-tool="pencil" title="Stift"><svg viewBox="0 0 24 24"><path d="M4 20l1.2-4.6L16 4.6a2 2 0 0 1 2.8 0l.6.6a2 2 0 0 1 0 2.8L8.6 18.8z"/><path d="M14.5 6l3.5 3.5"/></svg></button>
+    <button class="tool" data-tool="brush" title="Pinsel (weich)"><svg viewBox="0 0 24 24"><path d="M20 4c-3 1-8 6-10 9l1.5 1.5c3-2 8-7 9-10z"/><path d="M9 14c-2 0-4 1.5-4 3.5 0 1-1 2-2 2.5 3 1 7 0 7.5-3.5z"/></svg></button>
+    <button class="tool" data-tool="eraser" title="Radierer (malt weiß)"><svg viewBox="0 0 24 24"><path d="M4 16l9-9 6 6-7 7H8z"/><path d="M8.5 11.5l6 6M12 20h8"/></svg></button>
+    <button class="tool" data-tool="line" title="Linie (Umschalt = 45°)"><svg viewBox="0 0 24 24"><path d="M5 19L19 5"/></svg></button>
+    <button class="tool" data-tool="rect" title="Rechteck (Umschalt = Quadrat)"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="1"/></svg></button>
+    <button class="tool" data-tool="ellipse" title="Ellipse (Umschalt = Kreis)"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="8.5" ry="6.5"/></svg></button>
+    <button class="tool" data-tool="fill" title="Füllen"><svg viewBox="0 0 24 24"><path d="M5 11l7-7 7 7-7 7z"/><path d="M5 11h14"/><path d="M20 15s1.5 2 1.5 3a1.5 1.5 0 0 1-3 0c0-1 1.5-3 1.5-3z"/></svg></button>
+    <button class="tool" data-tool="picker" title="Farbe aufnehmen"><svg viewBox="0 0 24 24"><path d="M14 6l4 4M5 19l2-.5 9-9-2.5-2.5-9 9z"/><path d="M15 5l2-2 4 4-2 2"/></svg></button>
+    <hr>
+    <div class="size"><span id="sizeLbl">4 px</span><input type="range" id="size" min="1" max="60" value="4" aria-label="Strichstärke"></div>
+    <hr>
+    <div class="fillmode" id="fillmode" title="Formen: Umriss / gefüllt / beides">
+      <button data-f="stroke" class="on" title="Umriss"><svg viewBox="0 0 22 14"><rect x="2" y="2" width="18" height="10" fill="none" stroke="#333" stroke-width="2"/></svg></button>
+      <button data-f="fill" title="Gefüllt (Farbe 1)"><svg viewBox="0 0 22 14"><rect x="2" y="2" width="18" height="10" fill="#333"/></svg></button>
+      <button data-f="both" title="Umriss Farbe 1, Füllung Farbe 2"><svg viewBox="0 0 22 14"><rect x="2" y="2" width="18" height="10" fill="#bbb" stroke="#333" stroke-width="2"/></svg></button>
+    </div>
+  </div>
+
+  <div class="stage" id="stage"><div class="inner" id="inner"><canvas id="cv"></canvas><canvas id="ov"></canvas></div></div>
+
+  <div class="colors">
+    <div class="slots">
+      <button class="slot primary active" id="slot0" title="Farbe 1 (linke Maustaste)"></button>
+      <button class="slot secondary" id="slot1" title="Farbe 2 (rechte Maustaste)"></button>
+      <button class="swap" id="swapBtn" title="Farben tauschen">⇄</button>
+    </div>
+    <div class="palette" id="palette" title="Klick: aktive Farbe · Rechtsklick: Farbe 2"></div>
+    <div class="rgb">
+      <span>24-Bit-Farbe</span>
+      <input type="color" id="picker" aria-label="Farbauswahl">
+      <input type="text" id="hex" maxlength="7" spellcheck="false" aria-label="Hex-Wert">
+      <label>R <input type="number" id="r" min="0" max="255"></label>
+      <label>G <input type="number" id="g" min="0" max="255"></label>
+      <label>B <input type="number" id="b" min="0" max="255"></label>
+    </div>
+  </div>
+  <div class="status"><span id="stPos">–</span><span id="stSize"></span><span id="stHint">Tipp: Strg+V fügt ein Bild aus der Zwischenablage ein.</span></div>
+
+  <div class="overlay" id="dlg" hidden><div class="panel" id="dlgPanel"></div></div>
+  <div class="toast" id="toast"></div>
+  <script src="paint.js"></script>
+</body>
+</html>

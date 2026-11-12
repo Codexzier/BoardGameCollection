@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diktiergerät</title>
+<link rel="stylesheet" href="../../games/common.css">
+<style>
+  body {
+    background: radial-gradient(ellipse at 50% 20%, #e9edf2 0%, #cfd6df 100%);
+    overflow: auto;
+  }
+  .wrap { display: flex; gap: 18px; justify-content: center; align-items: flex-start; padding: 16px; min-height: 100%; flex-wrap: wrap; }
+  .ico { display: inline-block; width: 22px; height: 22px; background: currentColor; -webkit-mask: var(--i) center / contain no-repeat; mask: var(--i) center / contain no-repeat; }
+
+  /* ---------- Gerät ---------- */
+  .device {
+    width: 340px; flex: none;
+    background: linear-gradient(160deg, #4a515c 0%, #2f343c 55%, #272b31 100%);
+    border-radius: 42px 42px 34px 34px;
+    padding: 20px 22px 26px;
+    box-shadow: 0 24px 50px rgba(0,0,0,.35), inset 0 2px 0 rgba(255,255,255,.18), inset 0 -3px 0 rgba(0,0,0,.35);
+    color: #d7dce3;
+    position: relative;
+  }
+  .device::before { /* Seitenleiste */
+    content: ""; position: absolute; left: -5px; top: 120px; width: 6px; height: 90px; border-radius: 4px 0 0 4px;
+    background: linear-gradient(#5b636e, #3a4048);
+  }
+  .top { display: flex; justify-content: space-between; align-items: center; font-size: 11px; letter-spacing: 2px; color: #9aa3ae; margin-bottom: 10px; }
+  .top .brand { font-weight: 700; letter-spacing: 3px; }
+  .led { width: 10px; height: 10px; border-radius: 50%; background: #5a2323; box-shadow: inset 0 1px 2px rgba(0,0,0,.6); }
+  .led.on { background: #ff3b30; box-shadow: 0 0 10px #ff3b30, inset 0 -1px 2px rgba(0,0,0,.3); animation: blink 1s steps(2) infinite; }
+  .led.play { background: #3ddc84; box-shadow: 0 0 10px #3ddc84; animation: none; }
+  @keyframes blink { 50% { opacity: .35; } }
+  .grille {
+    height: 70px; border-radius: 16px; margin-bottom: 14px;
+    background: radial-gradient(circle, #15181c 2.2px, transparent 2.6px) 0 0 / 11px 11px, linear-gradient(#3a4048, #30353c);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,.6);
+  }
+
+  .lcd {
+    border-radius: 12px; padding: 10px 12px 8px;
+    background: linear-gradient(180deg, #b9d9a3 0%, #a7cb8f 100%);
+    color: #1f3320;
+    box-shadow: inset 0 3px 8px rgba(0,0,0,.35), 0 0 0 4px #1d2025, 0 0 0 5px #4b525c;
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    margin-bottom: 18px;
+  }
+  .lcd .row1 { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; }
+  .lcd .counter { font-size: 40px; font-weight: 700; letter-spacing: 2px; text-align: center; line-height: 1.15; font-variant-numeric: tabular-nums; }
+  .lcd .name { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; min-height: 15px; }
+  .lcd .row3 { display: flex; justify-content: space-between; font-size: 11px; margin-top: 4px; }
+  .meter { height: 8px; border-radius: 3px; background: rgba(31,51,32,.15); overflow: hidden; margin-top: 6px; cursor: pointer; position: relative; }
+  .meter i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: #1f3320; border-radius: 3px; }
+
+  .keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+  .key {
+    height: 50px; border: 0; border-radius: 12px; cursor: pointer; color: #e7ebf0;
+    background: linear-gradient(#59616d, #404750);
+    box-shadow: 0 4px 0 #1b1e23, 0 6px 10px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.15);
+    display: grid; place-items: center; transition: transform .06s, box-shadow .06s;
+  }
+  .key:active, .key.down { transform: translateY(3px); box-shadow: 0 1px 0 #1b1e23, 0 2px 4px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.1); }
+  .key:disabled { opacity: .45; cursor: default; }
+  .key small { display: block; font-size: 9px; letter-spacing: 1px; margin-top: -4px; opacity: .7; }
+  .recrow { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .rec {
+    width: 78px; height: 78px; border-radius: 50%; border: 0; cursor: pointer; flex: none;
+    background: radial-gradient(circle at 40% 35%, #ff6b61, #d92b22 60%, #a51d16);
+    box-shadow: 0 5px 0 #6b120d, 0 8px 16px rgba(0,0,0,.4), inset 0 2px 0 rgba(255,255,255,.25);
+    color: #fff; display: grid; place-items: center; transition: transform .06s, box-shadow .06s;
+  }
+  .rec .ico { width: 34px; height: 34px; }
+  .rec:active, .rec.on { transform: translateY(4px); box-shadow: 0 1px 0 #6b120d, 0 3px 8px rgba(0,0,0,.4), inset 0 2px 6px rgba(0,0,0,.3); }
+  .rec.on { background: radial-gradient(circle at 40% 35%, #ff8a80, #ff3b30 60%, #c4241b); }
+  .play-big { flex: 1; height: 60px; border-radius: 16px; }
+  .play-big .ico { width: 28px; height: 28px; }
+  .labels { display: flex; justify-content: space-between; font-size: 10px; letter-spacing: 1.5px; color: #8f98a4; margin: -8px 4px 14px; }
+
+  .opts { display: grid; gap: 8px; }
+  .opts .lbl { font-size: 10px; letter-spacing: 1.5px; color: #8f98a4; margin-bottom: 3px; }
+  .pick { display: flex; gap: 4px; flex-wrap: wrap; }
+  .pick button {
+    flex: 1; min-width: 44px; border: 0; border-radius: 8px; padding: 6px 4px; cursor: pointer; font-size: 12px; font-weight: 600;
+    background: #20242a; color: #aab3be; box-shadow: inset 0 1px 3px rgba(0,0,0,.5);
+  }
+  .pick button.on { background: #e7ebf0; color: #1f242b; box-shadow: 0 1px 0 rgba(255,255,255,.2); }
+
+  /* ---------- Aufnahmeliste ---------- */
+  .list {
+    width: 340px; flex: 1 1 320px; max-width: 520px;
+    background: rgba(255,255,255,.78); border: 1px solid rgba(255,255,255,.95);
+    border-radius: 18px; padding: 14px; box-shadow: 0 14px 34px rgba(0,0,0,.14);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  }
+  .list h2 { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; font-size: 13px; text-transform: uppercase; letter-spacing: .8px; color: var(--ui-dim); }
+  .list h2 .ico { width: 16px; height: 16px; }
+  .list h2 span.count { margin-left: auto; text-transform: none; letter-spacing: 0; }
+  /* höchstens 10 Einträge sichtbar, der Rest wird gescrollt */
+  .items { --row: 48px; max-height: calc(var(--row) * 10 + 9 * 4px); overflow-y: auto; display: flex; flex-direction: column; gap: 4px; padding-right: 2px; }
+  .item {
+    height: var(--row); flex: none; display: flex; align-items: center; gap: 10px; padding: 0 6px 0 12px;
+    border-radius: 10px; background: #fff; border: 1px solid rgba(24,34,46,.07); cursor: pointer;
+  }
+  .item:hover { border-color: rgba(47,124,246,.35); }
+  .item.sel { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(47,124,246,.2); }
+  .item .meta { flex: 1; min-width: 0; line-height: 1.2; }
+  .item .meta b { display: block; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+  .item .meta small { color: var(--ui-dim); font-size: 12px; }
+  .item .act { width: 34px; height: 34px; border: 0; border-radius: 8px; background: transparent; cursor: pointer; color: #45505c; display: grid; place-items: center; }
+  .item .act:hover { background: rgba(24,34,46,.07); }
+  .item .act.del:hover { color: var(--danger); }
+  .item .act .ico { width: 18px; height: 18px; }
+  .empty { color: var(--ui-dim); font-size: 14px; padding: 18px 6px; text-align: center; line-height: 1.5; }
+  .note { font-size: 12px; color: var(--ui-dim); margin-top: 10px; line-height: 1.45; }
+
+  @media (max-width: 400px) {
+    .wrap { padding: 10px; }
+    .device { width: 100%; padding: 16px; }
+    .list { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="device" aria-label="Diktiergerät">
+    <div class="top"><span class="brand">DIKTAFON</span><span class="led" id="led"></span></div>
+    <div class="grille"></div>
+    <div class="lcd" aria-live="polite">
+      <div class="row1"><span id="lcdState">■ STOP</span><span id="lcdIndex">--/--</span></div>
+      <div class="counter" id="lcdTime">00:00</div>
+      <div class="name" id="lcdName">Bereit</div>
+      <div class="meter" id="meter" title="Klicken zum Springen"><i id="meterBar"></i></div>
+      <div class="row3"><span id="lcdSpeed">1x</span><span id="lcdFx">FX AUS</span><span id="lcdTotal">--:--</span></div>
+    </div>
+
+    <div class="recrow">
+      <button class="rec" id="recBtn" title="Neue Aufnahme starten / beenden"><span class="ico" style="--i:url(../../assets/icons/target.png)"></span></button>
+      <button class="key play-big" id="playBtn" title="Abspielen / Pause"><span class="ico" id="playIco" style="--i:url(../../assets/icons/right.png)"></span></button>
+    </div>
+    <div class="labels"><span>RECORD</span><span>PLAY / PAUSE</span></div>
+
+    <div class="keys">
+      <button class="key" id="rewBtn" title="5 Sekunden zurück"><span class="ico" style="--i:url(../../assets/icons/rewind.png)"></span></button>
+      <button class="key" id="stopBtn" title="Stopp"><span class="ico" style="--i:url(../../assets/icons/stop.png)"></span></button>
+      <button class="key" id="ffBtn" title="5 Sekunden vor"><span class="ico" style="--i:url(../../assets/icons/fastForward.png)"></span></button>
+      <button class="key" id="dlBtn" title="Herunterladen (WAV, mit Tempo &amp; Effekt)"><span class="ico" style="--i:url(../../assets/icons/import.png)"></span></button>
+    </div>
+
+    <div class="opts">
+      <div><div class="lbl">TEMPO</div><div class="pick" id="speedSel"></div></div>
+      <div><div class="lbl">STIMMVERZERRER</div><div class="pick" id="fxSel"></div></div>
+    </div>
+  </section>
+
+  <section class="list">
+    <h2><span class="ico" style="--i:url(../../assets/icons/menuList.png)"></span>Aufnahmen <span class="count" id="count"></span></h2>
+    <div class="items" id="items"></div>
+    <div class="note" id="note">Aufnahmen werden nur in diesem Browser gespeichert. Mit „Herunterladen“ sicherst du sie als WAV-Datei – inklusive Tempo und Stimmeffekt.</div>
+  </section>
+</div>
+<div class="overlay" id="dlg" hidden><div class="panel" id="dlgPanel"></div></div>
+<div class="toast" id="toast"></div>
+<script src="dsp.js"></script>
+<script src="recorder.js"></script>
+</body>
+</html>
