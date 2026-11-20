@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sternenfront</title>
+<link rel="stylesheet" href="../common.css">
+<style>
+  :root { --c: #5ee7ff; --r: #ff5f57; --line: rgba(94,231,255,.35); --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; }
+  body { background: #000; color: #dff8ff; font-family: var(--mono); }
+  canvas#c { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: crosshair; touch-action: none; }
+  [hidden] { display: none !important; }
+  .vec { background: rgba(0,0,0,.78); border: 1px solid var(--line); box-shadow: 0 0 12px rgba(94,231,255,.12) inset; }
+  button.v {
+    font: 12px var(--mono); color: #dff8ff; background: rgba(0,0,0,.6); border: 1px solid var(--line);
+    padding: 5px 9px; cursor: pointer; letter-spacing: .5px; text-transform: uppercase; border-radius: 0;
+  }
+  button.v:hover { background: rgba(94,231,255,.15); border-color: var(--c); }
+  button.v:disabled { opacity: .35; cursor: default; background: rgba(0,0,0,.6); }
+  button.v.on { background: rgba(94,231,255,.25); border-color: var(--c); }
+  button.v .k { color: #7effaa; margin-left: 4px; }
+  button.v .cost { color: #ffd36b; display: block; font-size: 10px; margin-top: 2px; text-transform: none; }
+
+  #top { position: absolute; left: 0; right: 0; top: 0; height: 34px; display: flex; align-items: center; gap: 16px; padding: 0 10px; z-index: 5; font-size: 13px; border-width: 0 0 1px 0; }
+  #top .st b { color: #fff; }
+  #top .res b { color: #ffd36b; }
+  #top .spacer { flex: 1; }
+  #top .sys { color: var(--c); letter-spacing: 2px; }
+
+  #sector { position: absolute; right: 8px; top: 42px; width: 250px; z-index: 5; }
+  #sector .h { font-size: 11px; letter-spacing: 2px; padding: 4px 8px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; }
+  #sector { background: rgba(0,0,0,.93); }
+  #sector canvas { display: block; width: 250px; height: 170px; cursor: pointer; }
+  #sector .foot { font-size: 10px; color: rgba(223,248,255,.5); padding: 3px 8px; border-top: 1px solid var(--line); }
+
+  #log { position: absolute; left: 8px; bottom: 150px; width: min(440px, 60vw); z-index: 4; font-size: 12px; pointer-events: none; display: flex; flex-direction: column; gap: 2px; }
+  #log div { background: rgba(0,0,0,.7); padding: 3px 8px; border-left: 2px solid var(--c); pointer-events: auto; cursor: pointer; transition: opacity .5s; }
+  #log div.alert { border-color: var(--r); color: #ffd0cc; }
+  #log div.warn { border-color: #ffb84d; color: #ffe2b5; }
+  #log div.good { border-color: #7effaa; }
+
+  #hud { position: absolute; left: 0; right: 0; bottom: 0; min-height: 140px; z-index: 5; display: flex; gap: 0; border-width: 1px 0 0 0; }
+  #info { width: 330px; flex: none; padding: 8px 12px; border-right: 1px solid var(--line); font-size: 12px; line-height: 1.5; overflow: hidden; }
+  #info .name { font-size: 14px; color: #fff; letter-spacing: 1px; text-transform: uppercase; }
+  #info .row { display: flex; align-items: center; gap: 8px; }
+  #info .bar { flex: 1; height: 6px; background: rgba(255,255,255,.12); position: relative; }
+  #info .bar i { position: absolute; left: 0; top: 0; bottom: 0; }
+  #info .warn { color: #ffb84d; }
+  #info .bad { color: var(--r); }
+  #info .ok { color: #7effaa; }
+  #info .muted { color: rgba(223,248,255,.55); }
+  #info .units { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 4px; }
+  #cmds { flex: 1; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; overflow: auto; }
+  #cmds .grp { display: flex; flex-wrap: wrap; gap: 5px; align-items: stretch; }
+  #cmds .lbl { font-size: 10px; letter-spacing: 2px; color: rgba(223,248,255,.55); }
+  #cmds .queue { display: flex; gap: 4px; flex-wrap: wrap; }
+  #cmds .qi { border: 1px solid var(--line); padding: 3px 6px; font-size: 11px; cursor: pointer; position: relative; min-width: 70px; }
+  #cmds .qi i { position: absolute; left: 0; bottom: 0; height: 2px; background: var(--c); }
+  #cmds .hint { font-size: 12px; color: rgba(223,248,255,.6); line-height: 1.5; }
+
+  #tip { position: absolute; z-index: 20; pointer-events: none; font-size: 12px; padding: 6px 9px; max-width: 280px; line-height: 1.45; }
+
+  .overlay { background: rgba(0,0,0,.72); backdrop-filter: none; z-index: 50; }
+  .panel { background: #000; border: 1px solid var(--c); border-radius: 0; color: #dff8ff; box-shadow: 0 0 30px rgba(94,231,255,.25); width: min(620px, 100%); font-family: var(--mono); }
+  .panel h2 { font-size: 22px; letter-spacing: 4px; color: #fff; text-transform: uppercase; }
+  .panel p, .panel li { color: rgba(223,248,255,.8); font-size: 13px; }
+  .panel h3 { font-size: 13px; letter-spacing: 2px; color: var(--c); margin: 14px 0 4px; text-transform: uppercase; }
+  .panel table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .panel td { padding: 3px 6px; border-bottom: 1px solid rgba(94,231,255,.15); vertical-align: top; }
+  .panel td:first-child { color: #7effaa; white-space: nowrap; }
+  .opts { display: grid; grid-template-columns: auto 1fr; gap: 8px 12px; align-items: center; margin: 14px 0; font-size: 13px; }
+  .opts .pick { display: flex; gap: 5px; flex-wrap: wrap; }
+  .title { font-size: 40px; letter-spacing: 10px; color: #fff; text-shadow: 0 0 12px var(--c); margin: 0 0 4px; }
+  .logo { display: block; margin: 0 auto 6px; }
+  @media (max-height: 520px) {
+    #top { height: 28px; font-size: 11px; gap: 8px; } #top .hide-s { display: none; }
+    #top button.v { padding: 2px 6px; font-size: 10px; }
+    #hud { min-height: 0; max-height: 40vh; }
+    #info { width: 34vw; font-size: 10px; line-height: 1.35; padding: 5px 8px; }
+    #info .name { font-size: 12px; }
+    #cmds { padding: 5px 8px; gap: 3px; }
+    #cmds .lbl { display: none; }
+    button.v { padding: 3px 6px; font-size: 10px; }
+    button.v .cost { display: inline; margin: 0 0 0 4px; font-size: 9px; }
+    #sector { top: 34px; width: 160px; } #sector canvas { width: 160px; height: 100px; } #sector .foot, #sector .h { display: none; }
+    #log { bottom: 42vh; font-size: 10px; }
+    #cmds .hint { display: none; }
+  }
+  @media (max-width: 760px) {
+    #info { width: 44vw; }
+    #sector { width: 170px; } #sector canvas { width: 170px; height: 116px; }
+    #top { gap: 8px; font-size: 11px; } #top .hide-s { display: none; }
+    #log { bottom: 170px; }
+  }
+</style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+
+  <div id="top" class="vec" hidden>
+    <span class="res">RS <b id="res">0</b> <span id="inc" style="color:#7effaa"></span></span>
+    <span class="st">SCHIFFE <b id="units">0</b></span>
+    <span class="st hide-s">ZEIT <b id="time">0:00</b></span>
+    <span class="sys" id="sysName"></span>
+    <span class="spacer"></span>
+    <button class="v" id="speedBtn" title="Spielgeschwindigkeit">1×</button>
+    <button class="v" id="pauseBtn" title="Pause (P)">Pause</button>
+    <button class="v" id="soundBtn" title="Ton an/aus">Ton</button>
+    <button class="v" id="helpBtn" title="Anleitung">?</button>
+    <button class="v" id="menuBtn">Menü</button>
+  </div>
+
+  <div id="sector" class="vec" hidden>
+    <div class="h" title="Klick: System ansehen · Rechtsklick: ausgewählte Schiffe dorthin schicken"><span>SEKTOREN</span></div>
+    <canvas id="sectorCv"></canvas>
+    <div class="foot">Klick: ansehen · Rechtsklick: Schiffe hinschicken</div>
+  </div>
+  <div id="log"></div>
+  <div id="hud" class="vec" hidden>
+    <div id="info"></div>
+    <div id="cmds"></div>
+  </div>
+  <div id="tip" class="vec" hidden></div>
+
+  <div class="overlay" id="startDlg">
+    <div class="panel">
+      <svg class="logo" width="120" height="70" viewBox="0 0 120 70" fill="none" stroke="#5ee7ff" stroke-width="2"><circle cx="30" cy="40" r="16"/><ellipse cx="30" cy="40" rx="27" ry="7" transform="rotate(-18 30 40)"/><path d="M70 50 L90 12 L110 50 L90 40 Z"/><ellipse cx="96" cy="60" rx="10" ry="5" stroke="#b38cff"/></svg>
+      <div class="title" style="text-align:center">STERNENFRONT</div>
+      <p style="text-align:center">Weltraum-Echtzeitstrategie. Baue dein Versorgungsnetz über Wurmlöcher aus, halte deine Flotten mit Supplies versorgt und vernichte die feindlichen Basen.</p>
+      <div class="opts">
+        <span>KARTE</span><div class="pick" id="mapPick"></div>
+        <span>GEGNER</span><div class="pick" id="diffPick"></div>
+      </div>
+      <div class="actions" style="justify-content:center">
+        <button class="v" id="howBtn">Anleitung</button>
+        <button class="v on" id="startBtn" style="padding:8px 26px;font-size:14px">Spiel starten</button>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" id="dlg" hidden><div class="panel" id="dlgPanel"></div></div>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
