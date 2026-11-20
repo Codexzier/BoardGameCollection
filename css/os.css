@@ -283,3 +283,201 @@ body.dragging { cursor: grabbing; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ================================================================
+   Gemeinsam: Elemente des Cyberpunk-Designs sind im Normal-Design aus
+   ================================================================ */
+.cp-center, .cp-lang, .win-path, .win-status { display: none; }
+.wc.fill svg { stroke-width: 1.3; }
+
+/* ---------------- Auf Webseite füllen ---------------- */
+.window.filled {
+  position: fixed !important;
+  left: 0 !important; top: 0 !important; width: 100vw !important; height: 100vh !important; height: 100dvh !important;
+  z-index: 300000 !important;
+  border-radius: 0 !important; border: 0 !important;
+}
+.window.filled .titlebar, .window.filled .resize-handle, .window.filled .win-status { display: none !important; }
+.fill-exit {
+  /* schmale Lasche oben in der Mitte – fährt erst beim Darüberfahren aus, damit sie die Spiel-Bedienung nicht verdeckt */
+  display: none; position: absolute; left: 50%; top: 0; z-index: 5;
+  transform: translate(-50%, calc(-100% + 9px)); transition: transform .18s ease, opacity .18s;
+  align-items: center; gap: 6px; padding: 7px 14px 5px; border-radius: 0 0 12px 12px;
+  border: 1px solid rgba(255,255,255,.55); border-top: 0; background: rgba(20,28,38,.7); color: #fff;
+  font: 600 12px system-ui, sans-serif; cursor: pointer; opacity: .75;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.fill-exit::after { content: ""; position: absolute; left: 50%; bottom: 3px; width: 28px; height: 3px; margin-left: -14px; border-radius: 2px; background: currentColor; opacity: .8; }
+.fill-exit svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; }
+.fill-exit span, .fill-exit svg { margin-bottom: 4px; }
+.fill-exit:hover, .fill-exit:focus-visible, .fill-exit.peek { transform: translate(-50%, 0); opacity: 1; }
+.window.filled .fill-exit { display: inline-flex; }
+body.has-filled .taskbar, body.has-filled .start-menu { visibility: hidden; }
+.theme-item .check { margin-left: auto; margin-right: 6px; opacity: 0; color: var(--accent); font-weight: 700; }
+.theme-item[aria-checked="true"] .check { opacity: 1; }
+.theme-sw { border-radius: 8px; border: 1px solid rgba(0,0,0,.15); }
+
+/* ================================================================
+   OS Design: Cyberpunk
+   ================================================================ */
+html[data-os="cyberpunk"] {
+  --cp-red: #ff4f5a; --cp-red2: #ff6b73; --cp-pink: #f6b6bf; --cp-mint: #3ff2a5; --cp-purple: #b48cff;
+  --cp-ink: #120a10; --cp-panel: rgba(14, 9, 18, .88); --cp-seg: rgba(14, 9, 18, .94);
+  --cp-line: rgba(255, 79, 90, .38); --cp-dim: rgba(246, 182, 191, .55);
+  --cp-mono: "GeistMono Nerd Font", "Geist Mono", "JetBrains Mono", "Fira Code", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --text: var(--cp-pink); --text-dim: var(--cp-dim); --accent: var(--cp-red);
+  font-family: var(--cp-mono);
+}
+html[data-os="cyberpunk"] body {
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0 1px, transparent 1px 3px),
+    radial-gradient(110% 65% at 78% -12%, rgba(124, 72, 176, .9) 0%, rgba(86, 44, 128, .45) 38%, transparent 70%),
+    radial-gradient(70% 55% at -5% 105%, rgba(255, 60, 92, .22) 0%, transparent 62%),
+    radial-gradient(55% 45% at 105% 100%, rgba(255, 90, 70, .12) 0%, transparent 60%),
+    linear-gradient(180deg, #3b2453 0%, #26172f 32%, #150e1a 66%, #09070b 100%);
+  background-attachment: fixed;
+  color: var(--cp-pink);
+}
+html[data-os="cyberpunk"] .glass {
+  background: var(--cp-panel);
+  border: 1px solid var(--cp-line);
+  box-shadow: 0 18px 44px rgba(0,0,0,.55), 0 0 28px rgba(255, 60, 90, .12);
+  backdrop-filter: blur(12px) saturate(120%); -webkit-backdrop-filter: blur(12px) saturate(120%);
+}
+
+/* ---------- Startmenü ---------- */
+html[data-os="cyberpunk"] .start-menu { border-radius: 4px 18px 4px 4px; background: rgba(12, 8, 15, .95); }
+html[data-os="cyberpunk"] .start-head { color: var(--cp-purple); text-transform: none; letter-spacing: 0; font-size: 13px; }
+html[data-os="cyberpunk"] .start-head::before { content: "# ══ "; }
+html[data-os="cyberpunk"] .start-head::after { content: " ══ #"; }
+html[data-os="cyberpunk"] .start-item { border-radius: 0; color: var(--cp-pink); }
+html[data-os="cyberpunk"] .start-item b { font-weight: 600; color: var(--cp-red2); }
+html[data-os="cyberpunk"] .start-item small { color: var(--cp-dim); }
+html[data-os="cyberpunk"] .start-item:hover, html[data-os="cyberpunk"] .start-item:focus-visible { background: var(--cp-red); }
+html[data-os="cyberpunk"] .start-item:hover b, html[data-os="cyberpunk"] .start-item:hover small,
+html[data-os="cyberpunk"] .start-item:focus-visible b, html[data-os="cyberpunk"] .start-item:focus-visible small { color: var(--cp-ink); }
+html[data-os="cyberpunk"] .grp-head[aria-expanded="true"] { background: rgba(255, 79, 90, .14); }
+html[data-os="cyberpunk"] .grp-head .chev { border-color: var(--cp-red); }
+html[data-os="cyberpunk"] .grp-items { border-left: 1px dashed var(--cp-line); }
+html[data-os="cyberpunk"] .s-icon svg, html[data-os="cyberpunk"] .d-icon svg, html[data-os="cyberpunk"] .t-icon svg { filter: drop-shadow(0 0 4px rgba(255, 79, 90, .45)); }
+html[data-os="cyberpunk"] .theme-sw { border-radius: 2px; border-color: var(--cp-line); }
+
+/* ---------- Desktop-Symbole ---------- */
+html[data-os="cyberpunk"] .icon { color: var(--cp-pink); text-shadow: 0 0 6px rgba(255, 79, 90, .7); font-size: 12px; border-radius: 2px; }
+html[data-os="cyberpunk"] .icon .d-icon { border-radius: 4px 14px 4px 4px; background: rgba(14, 9, 18, .75); border-color: var(--cp-line); box-shadow: 0 0 14px rgba(255, 60, 90, .15); }
+html[data-os="cyberpunk"] .icon:hover, html[data-os="cyberpunk"] .icon:focus-visible { background: rgba(255, 79, 90, .12); border-color: var(--cp-line); }
+html[data-os="cyberpunk"] .icon.selected { background: rgba(255, 79, 90, .28); border-color: var(--cp-red); }
+
+/* ---------- Fenster ---------- */
+html[data-os="cyberpunk"] .window {
+  background: rgba(11, 7, 14, .92);
+  border: 1px solid rgba(255, 79, 90, .26);
+  border-radius: 22px 6px 6px 6px;
+  box-shadow: 0 22px 50px rgba(0,0,0,.6), 0 0 36px rgba(255, 50, 80, .10);
+}
+html[data-os="cyberpunk"] .window.active-win { border-color: rgba(255, 79, 90, .75); box-shadow: 0 22px 50px rgba(0,0,0,.6), 0 0 0 1px rgba(255, 79, 90, .25), 0 0 42px rgba(255, 50, 80, .25); }
+html[data-os="cyberpunk"] .window.inactive .titlebar { opacity: .6; }
+html[data-os="cyberpunk"] .window.maximized { border-radius: 14px 4px 4px 4px; }
+html[data-os="cyberpunk"] .titlebar { height: 32px; border-bottom: 1px solid rgba(255, 79, 90, .18); padding-left: 16px; font-size: 13px; }
+html[data-os="cyberpunk"] .win-title { display: none; }
+html[data-os="cyberpunk"] .win-path { display: block; flex: 1; color: var(--cp-red2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+html[data-os="cyberpunk"] .win-path b { font-weight: 500; color: var(--cp-red); }
+html[data-os="cyberpunk"] .win-icon { width: 16px; height: 16px; }
+html[data-os="cyberpunk"] .wc { width: 26px; height: 22px; border-radius: 0; border: 1px solid rgba(255, 79, 90, .35); }
+html[data-os="cyberpunk"] .wc svg { stroke: var(--cp-red2); }
+html[data-os="cyberpunk"] .wc:hover { background: var(--cp-red); }
+html[data-os="cyberpunk"] .wc:hover svg { stroke: var(--cp-ink); }
+html[data-os="cyberpunk"] .wc.close:hover { background: #ff2d3f; }
+html[data-os="cyberpunk"] .win-body { background: #0b080e; }
+html[data-os="cyberpunk"] .win-status {
+  display: flex; flex: none; height: 18px; align-items: stretch; font-size: 11px; line-height: 18px;
+  background: var(--cp-red); color: var(--cp-ink);
+}
+html[data-os="cyberpunk"] .win-status .m { background: var(--cp-ink); color: var(--cp-red); padding: 0 16px 0 10px; clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 100%, 0 100%); font-weight: 700; }
+html[data-os="cyberpunk"] .win-status .f { padding: 0 10px; white-space: nowrap; overflow: hidden; }
+html[data-os="cyberpunk"] .win-status .sp { flex: 1; }
+html[data-os="cyberpunk"] .win-status .r { padding: 0 12px; white-space: nowrap; }
+html[data-os="cyberpunk"] .window.inactive .win-status { background: rgba(255, 79, 90, .45); }
+html[data-os="cyberpunk"] .resize-handle::after { border-color: var(--cp-red); }
+html[data-os="cyberpunk"] .fill-exit { border-radius: 0 0 4px 14px; border-color: var(--cp-red); background: rgba(14, 9, 18, .85); color: var(--cp-red2); font-family: var(--cp-mono); }
+
+/* ---------- Taskleiste: Leiste oben (Querformat) ---------- */
+@media (orientation: landscape) {
+  html[data-os="cyberpunk"] .taskbar {
+    left: 0; right: 0; top: 0; bottom: auto; width: auto; height: 30px;
+    flex-direction: row; align-items: stretch; gap: 0; padding: 0;
+    border: 0; border-radius: 0; background: transparent; box-shadow: none;
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+    font-size: 13px;
+  }
+  html[data-os="cyberpunk"] .start-btn {
+    width: auto; flex: none; justify-content: center; padding: 0 30px 0 16px; border-radius: 0; border: 0;
+    background: var(--cp-red); color: var(--cp-ink); font-weight: 800; font-size: 13px; letter-spacing: 1px;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 16px) 100%, 0 100%);
+  }
+  html[data-os="cyberpunk"] .start-btn span::before { content: "Λ "; font-weight: 900; }
+  html[data-os="cyberpunk"] .start-btn:hover, html[data-os="cyberpunk"] .start-btn[aria-expanded="true"] { background: var(--cp-red2); }
+  html[data-os="cyberpunk"] .task-sep { display: none; }
+  html[data-os="cyberpunk"] .tasks {
+    flex: 0 1 auto; flex-direction: row; align-items: stretch; gap: 0; overflow: hidden;
+    margin-left: -16px; padding: 0 30px 0 26px; background: var(--cp-seg);
+    clip-path: polygon(16px 0, 100% 0, calc(100% - 16px) 100%, 0 100%);
+  }
+  html[data-os="cyberpunk"] .tasks:empty { padding-right: 46px; }
+  html[data-os="cyberpunk"] .tasks:empty::after { content: "∅"; color: var(--cp-dim); padding: 0; align-self: center; font-size: 13px; }
+  html[data-os="cyberpunk"] .task {
+    width: auto; flex: none; height: 100%; padding: 0 10px; gap: 6px; border: 0; border-radius: 0;
+    background: transparent; color: var(--cp-red2); font-size: 13px;
+  }
+  html[data-os="cyberpunk"] .task .t-icon { width: 16px; height: 16px; }
+  html[data-os="cyberpunk"] .task .t-name { max-width: 120px; }
+  html[data-os="cyberpunk"] .task:hover { background: rgba(255, 79, 90, .15); }
+  html[data-os="cyberpunk"] .task.active { color: var(--cp-mint); background: transparent; }
+  html[data-os="cyberpunk"] .task::before { left: 10px; right: 10px; top: auto; bottom: 0; width: auto; height: 2px; border-radius: 0; background: var(--cp-mint); transform: none; opacity: 0; transition: opacity .15s; }
+  html[data-os="cyberpunk"] .task.active::before { height: 2px; opacity: 1; }
+  html[data-os="cyberpunk"] .task.minimized { opacity: .55; }
+  html[data-os="cyberpunk"] .cp-center { display: flex; position: absolute; left: 50%; top: 0; height: 30px; transform: translateX(-50%); }
+  html[data-os="cyberpunk"] .cp-center span { display: flex; align-items: center; white-space: nowrap; font-size: 13px; }
+  html[data-os="cyberpunk"] .cp-date, html[data-os="cyberpunk"] .cp-time { background: var(--cp-seg); color: var(--cp-red2); padding: 0 34px; font-variant-numeric: tabular-nums; }
+  html[data-os="cyberpunk"] .cp-date { clip-path: polygon(0 0, 100% 0, 100% 100%, 16px 100%); }
+  html[data-os="cyberpunk"] .cp-time { clip-path: polygon(0 0, 100% 0, calc(100% - 16px) 100%, 0 100%); }
+  html[data-os="cyberpunk"] .cp-title {
+    background: var(--cp-mint); color: #08140e; padding: 0 44px; min-width: 260px; justify-content: center; font-weight: 600;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 16px) 100%, 16px 100%); margin: 0 -16px; position: relative; z-index: 1;
+    max-width: 34vw; overflow: hidden; text-overflow: ellipsis;
+  }
+  html[data-os="cyberpunk"] .tray {
+    margin-left: auto; flex: none; display: flex; align-items: center; gap: 18px; padding: 0 16px 0 34px;
+    border: 0; background: var(--cp-seg); clip-path: polygon(16px 0, 100% 0, 100% 100%, 0 100%);
+  }
+  html[data-os="cyberpunk"] .cp-lang { display: inline; color: var(--cp-red2); font-size: 13px; }
+  html[data-os="cyberpunk"] .cp-lang::before { content: "▲ "; color: var(--cp-red); }
+  html[data-os="cyberpunk"] .clock { flex-direction: row; gap: 10px; }
+  html[data-os="cyberpunk"] .clock .time { font-size: 13px; font-weight: 600; color: var(--cp-red2); letter-spacing: 0; }
+  html[data-os="cyberpunk"] .clock .date { display: none; }
+  html[data-os="cyberpunk"] .desktop { inset: 34px 0 0 0; }
+  html[data-os="cyberpunk"] .icons { left: 16px; top: 18px; }
+  html[data-os="cyberpunk"] .start-menu { left: 6px; top: 36px; bottom: auto; width: 320px; }
+}
+/* schmale Querformate: nur das Nötigste in der Leiste */
+@media (orientation: landscape) and (max-width: 1100px) {
+  html[data-os="cyberpunk"] .cp-date, html[data-os="cyberpunk"] .cp-time { display: none !important; }
+  html[data-os="cyberpunk"] .cp-title { min-width: 0; padding: 0 30px; }
+}
+@media (orientation: landscape) and (max-width: 760px), (orientation: landscape) and (max-height: 520px) {
+  html[data-os="cyberpunk"] .task .t-name { display: none; }
+  html[data-os="cyberpunk"] .cp-center { display: none; }
+  html[data-os="cyberpunk"] .start-btn { font-size: 12px; }
+}
+
+/* ---------- Taskleiste im Hochformat: unten, im Neon-Stil ---------- */
+@media (orientation: portrait) {
+  html[data-os="cyberpunk"] .taskbar { border-radius: 4px 16px 4px 4px; }
+  html[data-os="cyberpunk"] .start-btn { background: var(--cp-red); color: var(--cp-ink); border-radius: 0; clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%); padding-right: 22px; }
+  html[data-os="cyberpunk"] .task { border-radius: 0; }
+  html[data-os="cyberpunk"] .task.active { background: rgba(63, 242, 165, .15); border-color: transparent; }
+  html[data-os="cyberpunk"] .task::before { background: var(--cp-mint); }
+  html[data-os="cyberpunk"] .tray { border-left-color: var(--cp-line); }
+  html[data-os="cyberpunk"] .clock .time { color: var(--cp-red2); }
+  html[data-os="cyberpunk"] .start-menu { border-radius: 4px 18px 4px 4px; }
+}

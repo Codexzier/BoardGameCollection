@@ -14,6 +14,7 @@
     loop: `<svg viewBox="0 0 48 48"><rect x="3" y="7" width="42" height="34" rx="8" fill="#262c35"/><g fill="#e8582e"><rect x="8" y="12" width="6" height="6" rx="1.5"/><rect x="20" y="12" width="6" height="6" rx="1.5"/></g><g fill="#7b5cf0"><rect x="14" y="21" width="6" height="6" rx="1.5"/><rect x="32" y="21" width="6" height="6" rx="1.5"/></g><g fill="#2f9e5b"><rect x="8" y="30" width="12" height="6" rx="1.5"/><rect x="26" y="30" width="12" height="6" rx="1.5"/></g><rect x="29" y="10" width="2" height="28" fill="#7fe0a8"/></svg>`,
     racing3d: `<svg viewBox="0 0 48 48"><defs><linearGradient id="r3s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#23285a"/><stop offset="1" stop-color="#f3884a"/></linearGradient></defs><rect x="3" y="5" width="42" height="38" rx="9" fill="url(#r3s)"/><path d="M3 34l17-9h8l17 9v1a8 8 0 0 1-8 8H11a8 8 0 0 1-8-8z" fill="#3b3f46"/><path d="M24 26v4M24 33v5" stroke="#fff" stroke-width="2"/><path d="M14 30c0-3 2-5 5-5h10c3 0 5 2 5 5v3H14z" fill="#e8554f"/><circle cx="17" cy="31.5" r="1.6" fill="#fff6c8"/><circle cx="31" cy="31.5" r="1.6" fill="#fff6c8"/><circle cx="34" cy="14" r="3" fill="#ffd9a0"/></svg>`,
     space: `<svg viewBox="0 0 48 48"><rect x="3" y="3" width="42" height="42" rx="9" fill="#05070d"/><g fill="none" stroke-width="1.8"><circle cx="16" cy="30" r="7" stroke="#9fd8ff"/><ellipse cx="16" cy="30" rx="12" ry="3.2" stroke="#9fd8ff" transform="rotate(-18 16 30)"/><ellipse cx="36" cy="34" rx="5" ry="3" stroke="#b38cff"/><path d="M30 20 L36 8 L42 20 L36 16 Z" stroke="#5ee7ff"/><path d="M20 12 L24 5 L28 12 L24 10 Z" stroke="#ff5f57"/></g><g fill="#fff"><circle cx="9" cy="10" r=".9"/><circle cx="40" cy="27" r=".8"/><circle cx="28" cy="41" r=".8"/></g></svg>`,
+    design: `<svg viewBox="0 0 48 48"><rect x="4" y="7" width="40" height="28" rx="5" fill="#25303c"/><rect x="8" y="11" width="15" height="20" rx="2" fill="#dfe9f5"/><rect x="25" y="11" width="15" height="20" rx="2" fill="#2a1834"/><path d="M25 14h9M25 18h12M25 22h7" stroke="#ff4f5a" stroke-width="2"/><rect x="18" y="35" width="12" height="4" fill="#25303c"/><rect x="13" y="39" width="22" height="3" rx="1.5" fill="#25303c"/></svg>`,
     games: `<svg viewBox="0 0 48 48"><rect x="4" y="14" width="40" height="22" rx="11" fill="#5b6cf0"/><path d="M14 20v10M9 25h10" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/><circle cx="32" cy="22" r="2.6" fill="#fff"/><circle cx="37" cy="27" r="2.6" fill="#fff"/></svg>`,
     apps: `<svg viewBox="0 0 48 48"><rect x="5" y="5" width="17" height="17" rx="5" fill="#2f9e5b"/><rect x="26" y="5" width="17" height="17" rx="5" fill="#f2a530"/><rect x="5" y="26" width="17" height="17" rx="5" fill="#e5484d"/><rect x="26" y="26" width="17" height="17" rx="5" fill="#2f7cf6"/></svg>`,
     about: `<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="19" fill="#2f7cf6"/><rect x="21.5" y="20" width="5" height="15" rx="2.5" fill="#fff"/><circle cx="24" cy="14" r="3" fill="#fff"/></svg>`,
@@ -103,6 +104,52 @@
     wrap.append(head, items);
     startList.appendChild(wrap);
   }
+  /* OS Design: Normal / Cyberpunk */
+  const THEMES = [
+    { id: 'normal', name: 'Normal', desc: 'Helles Glas, Taskleiste links', sw: 'linear-gradient(135deg,#dfe9f5,#9fb8d6)' },
+    { id: 'cyberpunk', name: 'Cyberpunk', desc: 'Neon-Rot, Mint, dunkles Violett', sw: 'linear-gradient(135deg,#ff4f5a 0 45%,#3ff2a5 45% 60%,#2a1834 60%)' },
+  ];
+  const themeItems = [];
+  {
+    const wrap = document.createElement('div');
+    wrap.className = 'grp';
+    const head = document.createElement('button');
+    head.className = 'start-item grp-head';
+    head.setAttribute('aria-expanded', String(openGroup === 'design'));
+    head.innerHTML = `<span class="s-icon">${ICONS.design}</span><span><b>OS Design</b></span><span class="chev" aria-hidden="true"></span>`;
+    const items = document.createElement('div');
+    items.className = 'grp-items';
+    items.hidden = openGroup !== 'design';
+    for (const t of THEMES) {
+      const b = document.createElement('button');
+      b.className = 'start-item sub theme-item';
+      b.setAttribute('role', 'menuitemradio');
+      b.dataset.theme = t.id;
+      b.innerHTML = `<span class="s-icon theme-sw" style="background:${t.sw}"></span><span><b>${t.name}</b><small>${t.desc}</small></span><span class="check" aria-hidden="true">✓</span>`;
+      b.addEventListener('click', () => { setTheme(t.id); toggleStart(false); });
+      items.appendChild(b);
+      themeItems.push(b);
+    }
+    head.addEventListener('click', () => {
+      const open = items.hidden;
+      startList.querySelectorAll('.grp-items').forEach(el => { el.hidden = true; });
+      startList.querySelectorAll('.grp-head').forEach(el => el.setAttribute('aria-expanded', 'false'));
+      items.hidden = !open;
+      head.setAttribute('aria-expanded', String(open));
+      try { localStorage.setItem('os.menuGroup', open ? 'design' : ''); } catch (_) {}
+    });
+    wrap.append(head, items);
+    startList.appendChild(wrap);
+  }
+  function setTheme(id) {
+    document.documentElement.dataset.os = id;
+    try { localStorage.setItem('os.theme', id); } catch (_) {}
+    themeItems.forEach(b => b.setAttribute('aria-checked', String(b.dataset.theme === id)));
+    // Desktopfläche ändert sich (Leiste oben statt links) → Fenster neu einpassen
+    requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+  }
+  setTheme(document.documentElement.dataset.os === 'cyberpunk' ? 'cyberpunk' : 'normal');
+
   APPS.filter(a => !a.group).forEach(a => startList.appendChild(menuItem(a)));
 
   function toggleStart(force) {
@@ -116,7 +163,11 @@
     if (!startMenu.hidden && !startMenu.contains(e.target) && !startBtn.contains(e.target)) toggleStart(false);
     if (!e.target.closest('.icon')) iconsEl.querySelectorAll('.icon.selected').forEach(i => i.classList.remove('selected'));
   });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') toggleStart(false); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    toggleStart(false);
+    for (const w of windows.values()) if (w.el.classList.contains('filled')) toggleFill(w, false);
+  });
 
   /* ---------- Fenster ---------- */
   function openApp(id) {
@@ -125,6 +176,9 @@
     const el = tpl.content.firstElementChild.cloneNode(true);
     $('.win-icon', el).innerHTML = ICONS[id];
     $('.win-title', el).textContent = app.name;
+    const path = app.url.replace(/\/index\.html$/, '').replace(/\.html$/, '');
+    $('.win-path', el).innerHTML = `<b>spieler@sammlung</b>:~/${path}`;
+    $('.win-status .f', el).textContent = `${path.split('/').pop()}  │  ${app.group === 'games' ? 'ft:spiel' : 'ft:app'}`;
     el.setAttribute('aria-label', app.name);
 
     const iframe = document.createElement('iframe');
@@ -157,6 +211,18 @@
     });
     $('.min', el).addEventListener('click', () => minimize(win));
     $('.max', el).addEventListener('click', () => toggleMax(win));
+    $('.fill', el).addEventListener('click', () => toggleFill(win));
+    const exitBtn = $('.fill-exit', el);
+    exitBtn.addEventListener('click', (e) => {
+      // Auf Touch-Geräten fährt das erste Antippen die Lasche nur aus
+      if (matchMedia('(hover: none)').matches && !exitBtn.classList.contains('peek')) {
+        exitBtn.classList.add('peek');
+        clearTimeout(exitBtn._t); exitBtn._t = setTimeout(() => exitBtn.classList.remove('peek'), 2500);
+        return;
+      }
+      exitBtn.classList.remove('peek');
+      toggleFill(win, false);
+    });
     $('.close', el).addEventListener('click', () => closeWin(win));
     $('.titlebar', el).addEventListener('dblclick', (e) => { if (!e.target.closest('.wc')) toggleMax(win); });
     el.addEventListener('pointerdown', () => focus(win), true);
@@ -175,6 +241,21 @@
       w.task.classList.toggle('active', me);
     }
     if (win) win.el.style.zIndex = ++zTop;
+    updateBarTitle();
+  }
+  function updateBarTitle() {
+    const w = [...windows.values()].find(x => x.el.classList.contains('active-win') && !x.el.classList.contains('minimized'));
+    const t = document.getElementById('cpTitle');
+    if (t) t.textContent = w ? w.app.name : 'spielesammlung';
+  }
+
+  /** Auf Webseite füllen: Fenster deckt die ganze Seite ab (auch die Taskleiste) */
+  function toggleFill(win, force) {
+    const on = force ?? !win.el.classList.contains('filled');
+    win.el.classList.toggle('filled', on);
+    document.body.classList.toggle('has-filled', [...windows.values()].some(w => w.el.classList.contains('filled')));
+    if (on) { restore(win); focus(win); }
+    $('.fill', win.el).title = on ? 'Füllen beenden' : 'Auf Webseite füllen';
   }
 
   function topVisible() {
@@ -187,12 +268,13 @@
   }
 
   function minimize(win) {
+    if (win.el.classList.contains('filled')) toggleFill(win, false);
     win.el.classList.add('minimized');
     win.task.classList.add('minimized');
     win.el.classList.remove('active-win');
     win.task.classList.remove('active');
     const next = topVisible();
-    if (next) focus(next);
+    if (next) focus(next); else updateBarTitle();
   }
 
   function restore(win) {
@@ -224,9 +306,10 @@
     win.el.classList.add('closing');
     win.task.remove();
     windows.delete(win.app.id);
+    document.body.classList.toggle('has-filled', [...windows.values()].some(w => w.el.classList.contains('filled')));
     setTimeout(() => win.el.remove(), 160);
     const next = topVisible();
-    if (next) focus(next);
+    if (next) focus(next); else updateBarTitle();
   }
 
   function makeDraggable(win) {
@@ -313,13 +396,17 @@
 
   /* ---------- Uhr ---------- */
   const clockT = $('#clock .time'), clockD = $('#clock .date');
+  const cpDate = $('#cpDate'), cpTime = $('#cpTime');
+  const p2 = (n) => String(n).padStart(2, '0');
   function tick() {
     const d = new Date();
     clockT.textContent = d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
     clockD.textContent = d.toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
+    cpDate.textContent = `${d.getFullYear()}/${p2(d.getMonth() + 1)}/${p2(d.getDate())}`;
+    cpTime.textContent = `${p2(d.getHours())}.${p2(d.getMinutes())}:${p2(d.getSeconds())}`;
   }
   tick();
-  setInterval(tick, 5000);
+  setInterval(tick, 1000);
 
   // Direktlink: index.html#mahjong öffnet ein Spiel sofort
   const hash = location.hash.slice(1);
