@@ -14,6 +14,7 @@ minimieren und maximieren kann.
 | **Entenjagd** | Schießbude, 2 Minuten Spielzeit, alle 30 Sekunden eine neue Stufe (schneller, kleiner, mehr Abtauchen), Magazin & Multiplikator | Kenney *Shooting Gallery* |
 | **Rennen** | 3 Runden gegen einen NPC. Strecken: Oval, L-Kurs, Acht. Fahrzeuge: Sportwagen und Motorrad (5 Farben). Menü mit Top-10-Bestenliste je Strecke | Kenney *Racing Pack* |
 | **Rennen 3D** | 3D-Rennen über 3 Runden gegen 1–3 Gegner auf denselben drei Strecken. Tageszeit (Tag, Abend, Nacht), Nebel (aus, leicht, dicht), Scheinwerfer, Straßenlaternen und Lichtkegel im Nebel, Bloom, Vignette, Filmkorn und Speed-Blur. Nach dem Rennen ein Replay mit automatischer Kino-Regie (TV-Kameras, Helikopter, Kamerafahrt, Vorbeiflug, Radkamera …), Zeitlupe bei Überholmanövern und im Ziel, Kinobalken und Tiefenunschärfe. Grafikstufen Niedrig/Mittel/Hoch | Kenney *Racing Kit* (3D), [Three.js](https://threejs.org) r170 |
+| **Sternenfront** | 2D-Weltraum-Echtzeitstrategie im Vektorstil (schwarzer Raum, Linien, geometrische Formen). 5 oder 7 Sternensysteme, verbunden über Wurmlöcher. Basen auf Planeten sind nur operativ, wenn im System ein HQ steht oder es per Sprungtor mit dem Versorgungsnetz verbunden ist. Jedes Schiff hat Supplies (Schießen und Spezialaktionen verbrauchen sie, bei 0 fast wehrlos); Nachschub über Versorgungsschiffe oder operative Basen. Vier Admiräle mit Flottenboni (+15–25 %). KI-Gegner in drei Stufen, Nebel des Krieges | Kenney *Simple Space* |
 | **Aquarium** | Startkapital 100 Einheiten; Schere-Stein-Papier-Prinzip: Rot frisst Grün, Grün frisst Blau, Blau frisst Rot. Halte mindestens 3 Fische am Leben | Kenney *Fish Pack* |
 
 ## Anwendungen
@@ -58,6 +59,18 @@ Im Hochformat (Smartphone) liegt die Taskleiste unten und zeigt laufende Program
 
 Im Replay: Leertaste = Abspielen/Pause, Zeitleiste zum Springen, Tempo 0,5×–2×, Kamera (Kino-Regie, Verfolger, TV-Kameras, Helikopter) und Fahrzeug im Fokus wählbar.
 
+### Sternenfront – Bedienung
+
+| Eingabe | Aktion |
+|---|---|
+| Linksklick / Ziehen | auswählen / Rahmenauswahl (Doppelklick: alle eines Typs) |
+| Rechtsklick | bewegen, angreifen, durch Wurmloch fliegen, Baustelle weiterbauen, Versorger folgen lassen, Sammelpunkt |
+| Rechts ziehen, WASD, Mausrad | Ansicht verschieben, zoomen |
+| H · R · Q | Halt · Nachschub holen · Spezialaktion |
+| F · G · ⇧F | Flotte bilden · Flotte wählen · Flotte auflösen |
+| Strg+1–9 / 1–9 | Gruppe speichern / wählen |
+| Tab · Pos1 · K · P | nächstes System · Heimatsystem · alle Kampfschiffe · Pause |
+
 ## Lokal starten
 
 Keine Build-Schritte nötig. Es reicht ein beliebiger statischer Webserver:
@@ -67,7 +80,7 @@ python3 -m http.server 8000
 ```
 
 Danach `http://localhost:8000` öffnen. Ein Direktlink öffnet ein Spiel sofort, z. B. `index.html#mahjong`
-(`domino`, `mahjong`, `romme`, `duck`, `aquarium`, `racing`, `racing3d`, `sketch`, `dicta`, `loop`).
+(`domino`, `mahjong`, `romme`, `duck`, `aquarium`, `racing`, `racing3d`, `space`, `sketch`, `dicta`, `loop`).
 
 ## GitHub Pages
 
