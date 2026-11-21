@@ -25,7 +25,13 @@ minimieren und maximieren kann.
 | **Diktiergerät** | Aufnahme per Mikrofon, gespeichert im Browser (IndexedDB); Liste mit max. 10 sichtbaren Einträgen; Tempo 1x/1,25x/1,5x/2x/3x ohne Tonhöhenänderung; Stimmverzerrer Hoch (Helium), Tief (Monster), Roboter, Telefon/Funk; Download als WAV inklusive Tempo und Effekt |
 | **LoopStudio** | Kleines Musikprogramm: Spuren (Drumset, Bassline, Melo, Strings, Soundeffekte) mit Drehreglern für Hall, Radio und Phaser; Loops im 1/16-Raster (1, 2 oder 4 Takte), Mini-Pianoroll über 2 Oktaven; Arrangement über bis zu 64 Takte; Mixer mit Lautstärke je Spur und Master; Play, Play in Loop, Pause, Stop; Setup als JSON herunterladen und in jedem Browser wieder laden |
 
-Startmenü: **Spielesammlung** (alle Spiele), **Anwendungen** (SketchPainter, Diktiergerät, LoopStudio), **Über**.
+Startmenü: **Spielesammlung** (alle Spiele), **Anwendungen** (SketchPainter, Diktiergerät, LoopStudio), **OS Design**, **Über**.
+
+**OS Design** (Start → OS Design, wird im Browser gespeichert):
+- **Normal** – helles Glas, Taskleiste links, Foto als Hintergrund.
+- **Cyberpunk** – dunkles Violett-Schwarz als Verlauf statt Foto, Neon-Rot und Mint, Monospace-Schrift, obere Leiste mit schrägen Segmenten (Start, Programme, Datum, aktives Programm, Uhrzeit), Fenster mit Terminal-Prompt im Titel und roter Statuszeile. Im Hochformat bleibt die Leiste unten.
+
+**Fenster:** Minimieren, Maximieren, **Auf Webseite füllen** (das Programm deckt die ganze Seite inkl. Taskleiste ab; die Lasche oben in der Mitte oder Esc beendet den Modus) und Schließen.
 Im Hochformat (Smartphone) liegt die Taskleiste unten und zeigt laufende Programme nur als Icon.
 
 ### Aquarium – Spielprinzip
